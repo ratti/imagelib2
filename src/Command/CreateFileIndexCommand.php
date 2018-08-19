@@ -13,31 +13,28 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateFileIndexCommand extends Command
 {
+    protected static $defaultName = 'app:create-file-index';
 
-    public $thingsController;
+    public $thingsManager;
+    public $configHelper;
+    public $fileHelper;
 
- #   public function __construct(LoggerInterface $logger, ThingsManager $thingsManager)
- #   {
- #       $this->logger = $logger;
- #       $this->thingsManager = $thingsManager;
- #       parent::__construct();
-##    }
-
-    public function __construct(ThingsController $thingsController)
+    public function __construct(ThingsManager $thingsManager)
     {
-        $this->thingsController=$thingsController;
+        $this->thingsManager = $thingsManager;
+        $this->configHelper = $thingsManager->getConfigHelper();
+        $this->fileHelper = $thingsManager->getFileHelper();
+
         parent::__construct();
     }
 
 
-    protected static $defaultName = 'app:create-file-index';
-
     protected function configure()
     {
-#        $this
-#            ->setDescription('Add a short description for your command')
+        $this
+            ->setDescription('Add a short description for your command')
 #            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')#            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-#        ;
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -54,6 +51,10 @@ class CreateFileIndexCommand extends Command
         #       }
 
         #       $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-        $this->thingsController->buildIndexFromFileSystemAction();
+
+        $baseDir = $this->configHelper->filePathToThings;
+        $thingsRepo = $this->thingsManager->getEmptyRepository();
+        $thingsRepo->initFromFileSystem($baseDir);
+
     }
 }

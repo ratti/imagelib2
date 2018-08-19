@@ -18,21 +18,20 @@
 namespace App\Repository;
 
 
-use App\Manager\ThingsManager;
+use App\Entity\File;
 
 class ThingsRepository
 {
     /* @var \App\Manager\ThingsManager $thingsManager */
     public $thingsManager;
 
+    /* @var $things File[] */
+    public $things = array();
+
     public function initFromFileSystem($baseDir)
     {
-        $files=$this->thingsManager->getFileHelper()->find($baseDir);
+        $this->things = $this->thingsManager->getFileHelper()->find($baseDir);
     }
 
-    public function buildIndexFromFileSystem($baseDir)
-    {
-        $this->initFromFileSystem($baseDir);
-    }
 
 }

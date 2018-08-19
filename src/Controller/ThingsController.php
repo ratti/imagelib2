@@ -33,11 +33,5 @@ class ThingsController
         $this->fileHelper = $thingsManager->getFileHelper();
     }
 
-    public function buildIndexFromFileSystemAction()
-    {
-        $baseDir = $this->thingsManager->getConfigHelper()->filePathToThings;
-        $thingsRepo = $this->thingsManager->getEmptyRepository();
-        $thingsRepo->initFromFileSystem($baseDir);
-    }
 
 }
