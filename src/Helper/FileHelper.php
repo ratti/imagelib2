@@ -18,11 +18,24 @@
 namespace App\Helper;
 
 
-use App\Entity\File;
+use App\Entity\FileEntity;
+use App\Manager\ThingsManager;
 
 class FileHelper
 {
+    /* @var \App\Manager\ThingsManager */
     public $thingsManager;
+
+    private $logger;
+    private $configHelper;
+
+    public function init(ThingsManager $thingsManager)
+    {
+        $this->thingsManager = $thingsManager;
+
+        $this->logger = $thingsManager->getLogger();
+        $this->configHelper = $thingsManager->getConfigHelper();
+    }
 
     public function find($baseDir)
     {
@@ -32,20 +45,21 @@ class FileHelper
 
         $results = explode("\x0", `$cmd`);
         foreach ($results as $result) {
-            if (strlen($result)) {
+            if (strlen($result) && $this->hasThingExtension($result)) {
                 $result = substr($result, mb_strlen($baseDir) + 1);
                 if (strcmp($result[0], '.') !== 0) {
-                    $file = new File($baseDir, $result);
+                    $file = new FileEntity($baseDir, $result);
                     $ret[] = $file;
                 }
             }
         }
-        print_r($ret);
         return $ret;
     }
 
     public function hasThingExtension($fileName)
     {
+        $allowedExtensions = $this->configHelper->fileExtensionsOfThings;
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+        return false !== array_search(strtolower($extension),$allowedExtensions);
     }
 }

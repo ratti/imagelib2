@@ -18,7 +18,7 @@
 namespace App\Entity;
 
 
-class File
+class FileEntity
 {
     public $relFileName;
     public $baseDir;

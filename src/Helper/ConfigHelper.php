@@ -18,10 +18,38 @@
 namespace App\Helper;
 
 
+use App\Manager\ThingsManager;
+
 class ConfigHelper
 {
     public $thingsManager;
 
-    public $filePathToThings='/Users/jrossdeutscher/workspace/imagelib2/Ereignisse2';
+    private $logger;
+    private $fileHelper;
 
+    public $filePathToThings = '/Users/jrossdeutscher/workspace/imagelib2/Ereignisse2';
+
+    #Lowercase!
+    public $fileExtensionsOfBasicImages = array('jpg', 'jpeg');
+    public $fileExtensionsOfRawImages = array('dng', 'raw');
+    public $fileExtensionsOfBasicMovies = array('mp4');
+    public $fileExtensionsOfProprietaryMovies = array('mov');
+    public $fileExtensionsOfThings;
+
+    public function __construct()
+    {
+        $this->fileExtensionsOfThings = array_merge(
+            $this->fileExtensionsOfBasicImages,
+            $this->fileExtensionsOfRawImages,
+            $this->fileExtensionsOfBasicMovies,
+            $this->fileExtensionsOfProprietaryMovies
+        );
+    }
+
+    public function init(ThingsManager $thingsManager)
+    {
+        $this->thingsManager = $thingsManager;
+        $this->logger = $thingsManager->getLogger();
+        $this->fileHelper = $thingsManager->getFileHelper();
+    }
 }

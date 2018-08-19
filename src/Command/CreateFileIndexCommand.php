@@ -32,7 +32,7 @@ class CreateFileIndexCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Add a short description for your command')
+            ->setDescription('creates a repo file from the image dir')
 #            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')#            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
@@ -55,6 +55,8 @@ class CreateFileIndexCommand extends Command
         $baseDir = $this->configHelper->filePathToThings;
         $thingsRepo = $this->thingsManager->getEmptyRepository();
         $thingsRepo->initFromFileSystem($baseDir);
+        print_r($thingsRepo->things);
+
 
     }
 }

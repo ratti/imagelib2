@@ -18,19 +18,33 @@
 namespace App\Repository;
 
 
-use App\Entity\File;
+use App\Entity\FileEntity;
+use App\Entity\ThingEntity;
+use App\Manager\ThingsManager;
 
 class ThingsRepository
 {
     /* @var \App\Manager\ThingsManager $thingsManager */
     public $thingsManager;
 
-    /* @var $things File[] */
+    /* @var $things ThingEntity[] */
     public $things = array();
+
+    public function init(ThingsManager $thingsManager)
+    {
+        $this->thingsManager = $thingsManager;
+        $this->logger = $thingsManager->getLogger();
+        $this->configHelper = $thingsManager->getConfigHelper();
+        $this->fileHelper = $thingsManager->getFileHelper();
+    }
 
     public function initFromFileSystem($baseDir)
     {
-        $this->things = $this->thingsManager->getFileHelper()->find($baseDir);
+        /* @var $files FileEntity[] */
+        $files = $this->thingsManager->getFileHelper()->find($baseDir);
+        foreach ($files as $file) {
+            $this->things[] = new ThingEntity($file);
+        }
     }
 
 

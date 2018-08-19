@@ -37,14 +37,15 @@ class ThingsManager
         $this->fileHelper = $fileHelper;
         $this->thingsRepository = $thingsRepository;
 
-        $configHelper->thingsManager = $this;
-        $fileHelper->thingsManager = $this;
-        $thingsRepository->thingsManager = $this;
+        $configHelper->init($this);
+        $fileHelper->init($this);
     }
 
     public function getEmptyRepository()
     {
-        return clone $this->thingsRepository;
+        $repo = clone $this->thingsRepository;
+        $repo->init($this);
+        return $repo;
     }
 
     /**

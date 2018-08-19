@@ -17,8 +17,13 @@
 
 namespace App\Entity;
 
-
 class ThingEntity
 {
+    /* @var \App\Entity\FileEntity $file */
+    public $file;
 
+    public function __construct(FileEntity $file)
+    {
+        $this->file = $file;
+    }
 }
