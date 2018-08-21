@@ -86,7 +86,7 @@ class ThingEntity
     {
         $this->createDerivedFileAbstract(
             $inFile = $this->masterFile->getAbsolutePath(),
-            $outFile = $this->posterFile->getAbsolutePath(),
+            $outFile = $this->thumbnailFile->getAbsolutePath(),
             '256x256'
         );
     }
