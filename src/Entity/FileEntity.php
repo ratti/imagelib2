@@ -17,9 +17,11 @@
 
 namespace App\Entity;
 
+use App\Manager\ThingsManager;
 
 class FileEntity
 {
+    public $thingsManager;
     public $relFileName;
     public $baseDir;
 
@@ -29,8 +31,10 @@ class FileEntity
     public $extension = null;
     public $filename = null;
 
-    public function __construct($baseDir, $relFileName)
+    public function __construct(ThingsManager $thingsManager, $baseDir, $relFileName)
     {
+        $this->thingsManager = $thingsManager;
+
         $this->baseDir = $baseDir;
         $this->relFileName = $relFileName;
 
@@ -51,5 +55,14 @@ class FileEntity
     public function __toString()
     {
         return $this->getAbsolutePath();
+    }
+
+    public function isMovie()
+    {
+        return isset($this->extension) && strlen($this->extension) && false !== array_search(strtolower($this->extension), $this->thingsManager->getConfigHelper()->fileExtensionsOfMovies);
+    }
+    public function isImage()
+    {
+        return isset($this->extension) && strlen($this->extension) && false !== array_search(strtolower($this->extension), $this->thingsManager->getConfigHelper()->fileExtensionsOfImages);
     }
 }

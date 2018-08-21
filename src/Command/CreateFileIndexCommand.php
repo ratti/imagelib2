@@ -16,15 +16,15 @@ class CreateFileIndexCommand extends Command
     protected static $defaultName = 'app:create-file-index';
 
     public $thingsManager;
+    public $thingsController;
+
     public $configHelper;
     public $fileHelper;
 
-    public function __construct(ThingsManager $thingsManager)
+    public function __construct(ThingsManager $thingsManager, ThingsController $thingsController)
     {
-        $this->thingsManager = $thingsManager;
-        $this->configHelper = $thingsManager->getConfigHelper();
-        $this->fileHelper = $thingsManager->getFileHelper();
-
+        $this->thingsController=$thingsController;
+        $thingsController->__construct($thingsManager);
         parent::__construct();
     }
 
@@ -52,10 +52,8 @@ class CreateFileIndexCommand extends Command
 
         #       $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 
-        $baseDir = $this->configHelper->filePathToThings;
-        $thingsRepo = $this->thingsManager->getEmptyRepository();
-        $thingsRepo->initFromFileSystem($baseDir);
-        print_r($thingsRepo->things);
+        $this->thingsController->createFileIndexAction();
+        #print_r($thingsRepo->things);
 
 
     }

@@ -28,13 +28,30 @@ class ConfigHelper
     private $fileHelper;
 
     public $filePathToThings = '/Users/jrossdeutscher/workspace/imagelib2/Ereignisse2';
+    public $filePathToCache = '/Users/jrossdeutscher/workspace/imagelib2/Cache/Ereignisse2';
+    public $filePathToRepo = '/Users/jrossdeutscher/workspace/imagelib2/Ereignisse2.repo';
 
     #Lowercase!
     public $fileExtensionsOfBasicImages = array('jpg', 'jpeg');
     public $fileExtensionsOfRawImages = array('dng', 'raw');
+    public $fileExtensionsOfImages ;
+
     public $fileExtensionsOfBasicMovies = array('mp4');
     public $fileExtensionsOfProprietaryMovies = array('mov');
+    public $fileExtensionsOfMovies ;
+
     public $fileExtensionsOfThings;
+
+    public $derivedFiles=array(
+        'thumbnail'=>array(
+            'width'=>200,
+            'height'=>150,
+        ),
+        'poster'=>array(
+            'width'=>1200,
+            'height'=>900,
+        ),
+    );
 
     public function __construct()
     {
@@ -43,6 +60,16 @@ class ConfigHelper
             $this->fileExtensionsOfRawImages,
             $this->fileExtensionsOfBasicMovies,
             $this->fileExtensionsOfProprietaryMovies
+        );
+
+        $this->fileExtensionsOfMovies = array_merge(
+            $this->fileExtensionsOfBasicMovies,
+            $this->fileExtensionsOfProprietaryMovies
+        );
+
+        $this->fileExtensionsOfImages = array_merge(
+            $this->fileExtensionsOfBasicImages,
+            $this->fileExtensionsOfRawImages
         );
     }
 

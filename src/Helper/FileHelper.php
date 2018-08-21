@@ -48,7 +48,7 @@ class FileHelper
             if (strlen($result) && $this->hasThingExtension($result)) {
                 $result = substr($result, mb_strlen($baseDir) + 1);
                 if (strcmp($result[0], '.') !== 0) {
-                    $file = new FileEntity($baseDir, $result);
+                    $file = new FileEntity($this->thingsManager, $baseDir, $result);
                     $ret[] = $file;
                 }
             }
@@ -60,6 +60,6 @@ class FileHelper
     {
         $allowedExtensions = $this->configHelper->fileExtensionsOfThings;
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        return false !== array_search(strtolower($extension),$allowedExtensions);
+        return false !== array_search(strtolower($extension), $allowedExtensions);
     }
 }

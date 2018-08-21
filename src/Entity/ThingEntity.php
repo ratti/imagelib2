@@ -17,13 +17,130 @@
 
 namespace App\Entity;
 
+use App\Manager\ThingsManager;
+
 class ThingEntity
 {
-    /* @var \App\Entity\FileEntity $file */
-    public $file;
+    public $thingsManager;
 
-    public function __construct(FileEntity $file)
+    /* @var \App\Entity\FileEntity $masterFile */
+    public $masterFile;
+
+    /* @var \App\Entity\FileEntity $thumbnailFile */
+    public $thumbnailFile;
+
+    /* @var \App\Entity\FileEntity $posterFile */
+    public $posterFile;
+
+    public $masterExif;
+
+    public function __construct(ThingsManager $thingsManager, FileEntity $file)
     {
-        $this->file = $file;
+        $this->thingsManager = $thingsManager;
+
+        $this->masterFile = $file;
+        $this->thumbnailFile = $this->generatePath('thumbnail');
+        $this->posterFile = $this->generatePath('poster');
+
+        $this->setExif();
     }
+
+    public function generatePath($prefix)
+    {
+        $baseDir = $this->thingsManager->getConfigHelper()->filePathToCache . '/' . $prefix;
+        return new FileEntity($this->thingsManager, $baseDir, $this->masterFile->relFileName . '.jpg');
+    }
+
+    public function setExif()
+    {
+        $file = (string)$this->masterFile;
+        $cmd = 'exiftool -f -n -j -b ' . escapeshellarg($file);
+        $output = `$cmd`;
+        $obj = json_decode($output)[0];
+
+        unset($obj->ThumbnailImage);
+        unset($obj->OtherImage);
+
+        $this->masterExif = $obj;
+    }
+
+    public function getOrientation()
+    {
+        if (isset($this->masterExif->Orientation)) {
+            return $this->masterExif->Orientation;
+        } else {
+            return 1;
+        }
+
+        // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+    }
+
+
+    public function createAllDerivedFiles()
+    {
+        $this->createDerivedThumbnailFile();
+        $this->createDerivedPosterFile();
+    }
+
+    public function createDerivedThumbnailFile()
+    {
+        $this->createDerivedFileAbstract(
+            $inFile = $this->masterFile->getAbsolutePath(),
+            $outFile = $this->posterFile->getAbsolutePath(),
+            '256x256'
+        );
+    }
+
+    public function createDerivedPosterFile()
+    {
+        $this->createDerivedFileAbstract(
+            $inFile = $this->masterFile->getAbsolutePath(),
+            $outFile = $this->posterFile->getAbsolutePath(),
+            '1248x960'
+        );
+    }
+
+    public function createDerivedFileAbstract($inFile, $outFile, $size)
+    {
+        $outDir = dirname($outFile);
+
+        if (!is_dir($outDir)) mkdir($outDir, 0777, true);
+
+        if (!file_exists($outFile) || filemtime($inFile) !== filemtime($outFile)) {
+
+            if ($this->isImage()) {
+                $cmd = sprintf('magick convert %s -resize %s^ -auto-orient -gravity center -extent %s  %s',
+                    escapeshellarg($inFile), # infile
+                    $size, # resize
+                    $size, # extend
+                    escapeshellarg($outFile) # outfile
+                );
+                `$cmd`;
+            } elseif ($this->isMovie()){
+                $cmd = sprintf('magick convert %s[0] -resize %s^ -auto-orient -gravity center -extent %s  %s',
+                    escapeshellarg($inFile), # infile
+                    $size, # resize
+                    $size, # extend
+                    escapeshellarg($outFile) # outfile
+                );
+                `$cmd`;
+
+            }
+
+            if (file_exists($outFile)) {
+                touch($outFile, filemtime($inFile));
+            }
+        }
+    }
+
+    public function isMovie()
+    {
+        return $this->masterFile->isMovie();
+    }
+
+    public function isImage()
+    {
+        return $this->masterFile->isImage();
+    }
+
 }

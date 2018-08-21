@@ -43,9 +43,17 @@ class ThingsRepository
         /* @var $files FileEntity[] */
         $files = $this->thingsManager->getFileHelper()->find($baseDir);
         foreach ($files as $file) {
-            $this->things[] = new ThingEntity($file);
+            $this->things[] = new ThingEntity($this->thingsManager, $file);
         }
     }
 
+    public function save(){
+        $fileName=$this->thingsManager->getConfigHelper()->filePathToRepo;
+        file_put_contents($fileName,serialize($this));
+    }
+
+    public function getAll(){
+        return $this->things;
+    }
 
 }

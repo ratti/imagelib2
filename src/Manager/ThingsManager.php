@@ -48,6 +48,12 @@ class ThingsManager
         return $repo;
     }
 
+    public function loadRepository($fileName)
+    {
+        $this->thingsRepository=unserialize(file_get_contents($fileName));
+        return $this->thingsRepository;
+    }
+
     /**
      * @return LoggerInterface
      */

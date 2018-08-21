@@ -31,7 +31,25 @@ class ThingsController
         $this->thingsManager = $thingsManager;
         $this->configHelper = $thingsManager->getConfigHelper();
         $this->fileHelper = $thingsManager->getFileHelper();
+
     }
 
+    public function createFileIndexAction()
+    {
+        $baseDir = $this->configHelper->filePathToThings;
+        $thingsRepo = $this->thingsManager->getEmptyRepository();
+        $thingsRepo->initFromFileSystem($baseDir);
+        $thingsRepo->save();
+    }
+
+    public function createDerivedFilesAction()
+    {
+        $fileName = $this->configHelper->filePathToRepo;
+        $thingsRepo = $this->thingsManager->loadRepository($fileName);
+        foreach($thingsRepo->getAll() as $thing){
+            $thing->createAllDerivedFiles();
+        }
+
+    }
 
 }
