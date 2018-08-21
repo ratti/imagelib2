@@ -109,7 +109,7 @@ class ThingEntity
         if (!file_exists($outFile) || filemtime($inFile) !== filemtime($outFile)) {
 
             if ($this->isImage()) {
-                $cmd = sprintf('magick convert %s -resize %s^ -auto-orient -gravity center -extent %s  %s',
+                $cmd = sprintf('convert %s -resize %s^ -auto-orient -gravity center -extent %s  %s',
                     escapeshellarg($inFile), # infile
                     $size, # resize
                     $size, # extend
@@ -117,7 +117,7 @@ class ThingEntity
                 );
                 `$cmd`;
             } elseif ($this->isMovie()){
-                $cmd = sprintf('magick convert %s[0] -resize %s^ -auto-orient -gravity center -extent %s  %s',
+                $cmd = sprintf('convert %s[0] -resize %s^ -auto-orient -gravity center -extent %s  %s',
                     escapeshellarg($inFile), # infile
                     $size, # resize
                     $size, # extend

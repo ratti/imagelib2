@@ -27,34 +27,38 @@ class ConfigHelper
     private $logger;
     private $fileHelper;
 
-    public $filePathToThings = '/Users/jrossdeutscher/workspace/imagelib2/Ereignisse2';
-    public $filePathToCache = '/Users/jrossdeutscher/workspace/imagelib2/Cache/Ereignisse2';
-    public $filePathToRepo = '/Users/jrossdeutscher/workspace/imagelib2/Ereignisse2.repo';
+    public $filePathToThings;
+    public $filePathToCache;
+    public $filePathToRepo;
 
-    #Lowercase!
-    public $fileExtensionsOfBasicImages = array('jpg', 'jpeg');
-    public $fileExtensionsOfRawImages = array('dng', 'raw');
-    public $fileExtensionsOfImages ;
+    public $fileExtensionsOfBasicImages;
+    public $fileExtensionsOfRawImages;
+    public $fileExtensionsOfImages;
 
-    public $fileExtensionsOfBasicMovies = array('mp4');
-    public $fileExtensionsOfProprietaryMovies = array('mov');
+    public $fileExtensionsOfBasicMovies;
+    public $fileExtensionsOfProprietaryMovies;
     public $fileExtensionsOfMovies ;
 
     public $fileExtensionsOfThings;
 
-    public $derivedFiles=array(
-        'thumbnail'=>array(
-            'width'=>200,
-            'height'=>150,
-        ),
-        'poster'=>array(
-            'width'=>1200,
-            'height'=>900,
-        ),
-    );
+    public $derivedFiles;
 
     public function __construct()
     {
+
+        $this->filePathToThings = __DIR__ . '/../../../Ereignisse2';
+        $this->filePathToCache = __DIR__ . '/../../../Cache/Ereignisse2';
+        $this->filePathToRepo = __DIR__ . '/../../../Ereignisse2.repo';
+
+        #Lowercase!
+        $this->fileExtensionsOfBasicImages = array('jpg', 'jpeg');
+        $this->fileExtensionsOfRawImages = array('dng', 'raw');
+        $this->fileExtensionsOfImages ;
+
+        $this->fileExtensionsOfBasicMovies = array('mp4');
+        $this->fileExtensionsOfProprietaryMovies = array('mov');
+        $this->fileExtensionsOfMovies ;
+
         $this->fileExtensionsOfThings = array_merge(
             $this->fileExtensionsOfBasicImages,
             $this->fileExtensionsOfRawImages,
@@ -71,6 +75,18 @@ class ConfigHelper
             $this->fileExtensionsOfBasicImages,
             $this->fileExtensionsOfRawImages
         );
+
+        $this->derivedFiles=array(
+        'thumbnail'=>array(
+            'width'=>200,
+            'height'=>150,
+        ),
+        'poster'=>array(
+            'width'=>1200,
+            'height'=>900,
+        ),
+    );
+
     }
 
     public function init(ThingsManager $thingsManager)
