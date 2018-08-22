@@ -57,12 +57,11 @@ class FileHelper
     {
         $results = $this->findDirs($baseDir);
         foreach ($results as $result) {
-            if (strlen($result) ) {
-                $result = substr($result, mb_strlen($baseDir) + 1);
-                if (strcmp($result[0], '.') !== 0) {
-                    $folder = new FolderEntity($this->thingsManager, $baseDir, $result);
-                    $ret[] = $folder;
-                }
+            $result = substr($result, mb_strlen($baseDir) + 1);
+            if($result===false) $result=''; # Funny enough, root dir ''.
+            if (!strlen($result) || strcmp($result[0], '.') !== 0) {
+                $folder = new FolderEntity($this->thingsManager, $baseDir, $result);
+                $ret[] = $folder;
             }
         }
         return $ret;
@@ -73,16 +72,16 @@ class FileHelper
         $escapeBaseDir = escapeshellarg($baseDir);
         $cmd = "find -L $escapeBaseDir -type f -print0";
         $results = explode("\x0", `$cmd`);
-        if(!strlen($results[count($results)-1])) unset($results[count($results)-1]);
+        if (!strlen($results[count($results) - 1])) unset($results[count($results) - 1]);
         return $results;
     }
 
     public function findDirs($baseDir)
     {
         $escapeBaseDir = escapeshellarg($baseDir);
-        $cmd = "find -L $escapeBaseDir -type d -mindepth 1 -print0";
+        $cmd = "find -L $escapeBaseDir -type d -print0";
         $results = explode("\x0", `$cmd`);
-        if(!strlen($results[count($results)-1])) unset($results[count($results)-1]);
+        if (!strlen($results[count($results) - 1])) unset($results[count($results) - 1]);
         sort($results); # Important for building recursive tree: Children after parent!
         return $results;
     }

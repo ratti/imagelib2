@@ -57,6 +57,8 @@ class FileEntity
         $path_parts = pathinfo($this->absFileName);
 
         $this->relDirName = pathinfo($relFileName,PATHINFO_DIRNAME);
+        if($this->relDirName==='.')$this->relDirName='';
+
         $this->absDirName = $path_parts['dirname'];
         $this->basename = $path_parts['basename'];
         $this->extension = $path_parts['extension'];

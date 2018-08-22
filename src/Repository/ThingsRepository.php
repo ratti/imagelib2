@@ -109,13 +109,18 @@ class ThingsRepository
         return $id;
     }
 
+    public function getFolderByPath($relPath)
+    {
+        return $this->folderIds[$relPath];
+    }
+
     public function addThing(ThingEntity $thingEntity)
     {
         $id = count($this->things) + 1;
         $thingEntity->id = $id;
         $this->things[$id] = $thingEntity;
 
-        $folderId = $this->folderIds[$thingEntity->masterFile->relDirName];
+        $folderId = $this->getFolderByPath($thingEntity->masterFile->relDirName);
         $this->folders[$folderId]->thingsIds[] = $id;
         $thingEntity->folderId = $id;
         return $thingEntity;

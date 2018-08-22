@@ -22,6 +22,7 @@ class FolderEntity extends AbstractEntity
         $this->baseDir = $baseDir;
         $this->relPath = $relPath;
         $this->title = preg_replace('/^.*\//uis', '', $relPath);
+        if(!strlen($this->title)) $this->title='__root__';
 
         preg_match('/(^.*)\//uis', $this->relPath, $tmp);
         if (array_key_exists(1, $tmp)) {
