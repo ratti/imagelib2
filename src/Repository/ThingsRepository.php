@@ -45,13 +45,19 @@ class ThingsRepository
 
     public function initFromFileSystem($baseDir)
     {
+        /* @var $olders FolderEntity[] */
+        $folders = $this->thingsManager->getFileHelper()->findFolders($baseDir);
+        foreach ($folders as $folderEntity) {
+            $this->addFolder($folderEntity);
+        }
+
         /* @var $files FileEntity[] */
         $files = $this->thingsManager->getFileHelper()->findThings($baseDir);
         foreach ($files as $file) {
             $thingEntity = $this->addThing(new ThingEntity($this->thingsManager, $file));
-            $folderEntity = $this->registerFolder($thingEntity);
-            $thingEntity->folderId = $folderEntity->id;
-            $folderEntity->thingsIds[] = $thingEntity->id;
+#            $folderEntity = $this->registerFolder($thingEntity);
+#            $thingEntity->folderId = $folderEntity->id;
+#            $folderEntity->thingsIds[] = $thingEntity->id;
         }
     }
 
@@ -80,7 +86,7 @@ class ThingsRepository
 
         $id = count($this->folders);
         $parentFolderEntity->id = $id;
-        $parentFolderEntity->foldersIds[] = $folderEntity->id;
+        $parentFolderEntity->subfolderIds[] = $folderEntity->id;
 
         $this->folders[$id] = $parentFolderEntity;
         $this->folderIds[$parentRelPath] = $id;
@@ -93,6 +99,13 @@ class ThingsRepository
         $folderEntity->id = $id;
         $this->folders[$id] = $folderEntity;
         $this->folderIds[$folderEntity->relPath] = $id;
+
+        if (!is_null($folderEntity->parentRelPath)) {
+            $parentId = $this->folderIds[$folderEntity->parentRelPath];
+            $folderEntity->parentId = $parentId;
+            $this->folders[$parentId]->subfolderIds[] = $id;
+        }
+
         return $id;
     }
 
@@ -101,6 +114,10 @@ class ThingsRepository
         $id = count($this->things) + 1;
         $thingEntity->id = $id;
         $this->things[$id] = $thingEntity;
+
+        $folderId = $this->folderIds[$thingEntity->masterFile->relDirName];
+        $this->folders[$folderId]->thingsIds[] = $id;
+        $thingEntity->folderId = $id;
         return $thingEntity;
     }
 

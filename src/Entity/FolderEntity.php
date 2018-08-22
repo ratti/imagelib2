@@ -10,8 +10,10 @@ class FolderEntity extends AbstractEntity
     public $baseDir;
     public $title;
     public $thingsIds = array();
-    public $foldersIds = array();
+    public $subfolderIds = array();
     public $parentRelPath;
+    public $parentId;
+
 
     public function __construct(ThingsManager $thingsManager, $baseDir, $relPath)
     {
@@ -32,10 +34,11 @@ class FolderEntity extends AbstractEntity
         echo "id: " . $this->id . "\n";
         echo "baseDir: " . $this->baseDir . "\n";
         echo "relPath: " . $this->relPath . "\n";
-        echo "parentRelPath: " . $this->parentRelPath . "\n";
         echo "title: " . $this->title . "\n";
         echo "things: " . join(',', $this->thingsIds) . "\n";
-        echo "subfolders: " . join(',', $this->foldersIds) . "\n";
+        echo "subfoldersIds: " . join(',', $this->subfolderIds) . "\n";
+        echo "parentRelPath: " . $this->parentRelPath . "\n";
+        echo "parentId: " . $this->parentId . "\n";
     }
 
 }
