@@ -34,6 +34,24 @@ class ThingEntity
 
     public $masterExif;
 
+    public $folderId;
+
+    public $id;
+
+    public function dump(){
+
+        echo "id: ".$this->id."\n";
+
+        echo "folder id: ".$this->folderId."\n";
+
+        echo "master file:\n";
+        $this->masterFile->dump();
+        echo "thumbnail file:\n";
+        $this->thumbnailFile->dump();
+        echo "poster file:\n";
+        $this->posterFile->dump();
+    }
+
     public function __construct(ThingsManager $thingsManager, FileEntity $file)
     {
         $this->thingsManager = $thingsManager;
@@ -71,8 +89,6 @@ class ThingEntity
         } else {
             return 1;
         }
-
-        // https://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
     }
 
 
@@ -85,8 +101,8 @@ class ThingEntity
     public function createDerivedThumbnailFile()
     {
         $this->createDerivedFileAbstract(
-            $inFile = $this->masterFile->getAbsolutePath(),
-            $outFile = $this->thumbnailFile->getAbsolutePath(),
+            $inFile = $this->masterFile->absFileName,
+            $outFile = $this->thumbnailFile->absFileName,
             '256x256'
         );
     }
@@ -94,8 +110,8 @@ class ThingEntity
     public function createDerivedPosterFile()
     {
         $this->createDerivedFileAbstract(
-            $inFile = $this->masterFile->getAbsolutePath(),
-            $outFile = $this->posterFile->getAbsolutePath(),
+            $inFile = $this->masterFile->absFileName,
+            $outFile = $this->posterFile->absFileName,
             '1248x960'
         );
     }

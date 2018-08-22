@@ -37,13 +37,9 @@ class FileHelper
         $this->configHelper = $thingsManager->getConfigHelper();
     }
 
-    public function find($baseDir)
+    public function findThings($baseDir)
     {
-        $ret = array();
-        $escapeBaseDir = escapeshellarg($baseDir);
-        $cmd = "find -L $escapeBaseDir -type f -print0";
-
-        $results = explode("\x0", `$cmd`);
+        $results = $this->findFiles($baseDir);
         foreach ($results as $result) {
             if (strlen($result) && $this->hasThingExtension($result)) {
                 $result = substr($result, mb_strlen($baseDir) + 1);
@@ -54,6 +50,15 @@ class FileHelper
             }
         }
         return $ret;
+    }
+
+    public function findFiles($baseDir)
+    {
+        $escapeBaseDir = escapeshellarg($baseDir);
+        $cmd = "find -L $escapeBaseDir -type f -print0";
+        $results = explode("\x0", `$cmd`);
+        if(!strlen($results[count($results)-1])) unset($results[count($results)-1]);
+        return $results;
     }
 
     public function hasThingExtension($fileName)

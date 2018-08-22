@@ -23,13 +23,27 @@ class FileEntity
 {
     public $thingsManager;
     public $relFileName;
+    public $absFileName;
+    public $absDirName;
     public $baseDir;
 
 
-    public $dirname = null;
-    public $basename = null;
-    public $extension = null;
-    public $filename = null;
+    public $relDirName;
+    public $basename;
+    public $extension;
+    public $filename;
+
+    public function dump()
+    {
+
+        echo "relFileName: " . $this->relFileName . "\n";
+        echo "absFileName: " . $this->absFileName . "\n";
+        echo "baseDir: " . $this->baseDir . "\n";
+        echo "relDirName: " . $this->relDirName . "\n";
+        echo "basename: " . $this->basename . "\n";
+        echo "extension: " . $this->extension . "\n";
+        echo "filename: " . $this->filename . "\n";
+    }
 
     public function __construct(ThingsManager $thingsManager, $baseDir, $relFileName)
     {
@@ -38,29 +52,29 @@ class FileEntity
         $this->baseDir = $baseDir;
         $this->relFileName = $relFileName;
 
-        $path_parts = pathinfo($this->getAbsolutePath());
+        $this->absFileName = $this->baseDir . "/" . $this->relFileName;
 
-        $this->dirname = $path_parts['dirname'];
+        $path_parts = pathinfo($this->absFileName);
+
+        $this->relDirName = pathinfo($relFileName,PATHINFO_DIRNAME);
+        $this->absDirName = $path_parts['dirname'];
         $this->basename = $path_parts['basename'];
         $this->extension = $path_parts['extension'];
         $this->filename = $path_parts['filename'];
 
-    }
 
-    public function getAbsolutePath()
-    {
-        return $this->baseDir . "/" . $this->relFileName;
     }
 
     public function __toString()
     {
-        return $this->getAbsolutePath();
+        return $this->absFileName;
     }
 
     public function isMovie()
     {
         return isset($this->extension) && strlen($this->extension) && false !== array_search(strtolower($this->extension), $this->thingsManager->getConfigHelper()->fileExtensionsOfMovies);
     }
+
     public function isImage()
     {
         return isset($this->extension) && strlen($this->extension) && false !== array_search(strtolower($this->extension), $this->thingsManager->getConfigHelper()->fileExtensionsOfImages);

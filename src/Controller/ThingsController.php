@@ -19,8 +19,9 @@ namespace App\Controller;
 
 
 use App\Manager\ThingsManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class ThingsController
+class ThingsController extends AbstractController
 {
     public $thingsManager;
     public $configHelper;
@@ -44,12 +45,38 @@ class ThingsController
 
     public function createDerivedFilesAction()
     {
-        $fileName = $this->configHelper->filePathToRepo;
-        $thingsRepo = $this->thingsManager->loadRepository($fileName);
-        foreach($thingsRepo->getAll() as $thing){
+        foreach ($this->loadRepository()->getAll() as $thing) {
             $thing->createAllDerivedFiles();
         }
-
     }
 
+    public function CleanUpDerivedFilesAction()
+    {
+        $repository = $this->loadRepository();
+        $repoFiles = $repository->getAllDerivedFiles('absFileName', true);
+
+        $realFiles = $this->fileHelper->findFiles($this->configHelper->filePathToCache);
+
+        $filesToDelete = array();
+        foreach ($realFiles as $realFile) {
+            if (!array_key_exists($realFile, $repoFiles)) $filesToDelete[] = $realFile;
+        }
+        foreach ($filesToDelete as $fileToDelete) {
+            unlink($fileToDelete);
+        }
+    }
+
+    public function dumpRepositoryAction(){
+        $repository=$this->loadRepository();
+        $repository->dump();
+    }
+
+    /* --------------//--------------//--------------//--------------//-------------- */
+
+    public function loadRepository()
+    {
+        return $this->thingsManager->loadRepository(
+            $this->configHelper->filePathToRepo
+        );
+    }
 }
