@@ -51,6 +51,7 @@ class ThingsRepository
             $thingEntity = $this->addThing(new ThingEntity($this->thingsManager, $file));
             $folderEntity = $this->registerFolder($thingEntity);
             $thingEntity->folderId = $folderEntity->id;
+            $folderEntity->thingsIds[] = $thingEntity->id;
         }
     }
 
@@ -64,16 +65,40 @@ class ThingsRepository
         }
         $folderEntity = new FolderEntity($this->thingsManager, $thingEntity->masterFile->baseDir, $relPath);
 
-        $id = count($this->folders)+1;
+        $newId = $this->addFolder($folderEntity);
+        $this->registerParentFolders($this->folders[$newId]);
+        return $this->folders[$newId];
+    }
+
+    public function registerParentFolders(FolderEntity $folderEntity)
+    {
+        $parentRelPath = $folderEntity->parentRelPath;
+        if (is_null($parentRelPath)) return; # root
+        if (array_key_exists($parentRelPath, $this->folderIds)) return; # folder is already known
+
+        $parentFolderEntity = new FolderEntity($this->thingsManager, $folderEntity->baseDir, $parentRelPath);
+
+        $id = count($this->folders);
+        $parentFolderEntity->id = $id;
+        $parentFolderEntity->foldersIds[] = $folderEntity->id;
+
+        $this->folders[$id] = $parentFolderEntity;
+        $this->folderIds[$parentRelPath] = $id;
+        $this->registerParentFolders($parentFolderEntity);
+    }
+
+    public function addFolder(FolderEntity $folderEntity)
+    {
+        $id = count($this->folders);
         $folderEntity->id = $id;
         $this->folders[$id] = $folderEntity;
-        $this->folderIds[$relPath] = $id;
-        return $folderEntity;
+        $this->folderIds[$folderEntity->relPath] = $id;
+        return $id;
     }
 
     public function addThing(ThingEntity $thingEntity)
     {
-        $id = count($this->things)+1;
+        $id = count($this->things) + 1;
         $thingEntity->id = $id;
         $this->things[$id] = $thingEntity;
         return $thingEntity;
@@ -110,20 +135,21 @@ class ThingsRepository
         return $ret;
     }
 
-    public function dump(){
+    public function dump()
+    {
         echo "----------------- FOLDER MAPPING ------------------\n";
         print_r($this->folderIds);
 
         echo "----------------- FOLDERS ------------------\n";
-        foreach ($this->folders as $folder){
-            echo $folder->relPath."\n";
+        foreach ($this->folders as $folder) {
+            echo $folder->relPath . "\n";
             $folder->dump();
             echo "\n";
         }
 
         echo "----------------- THINGS ------------------\n";
-        foreach ($this->things as $thing){
-            echo "THING:\n".$thing->masterFile->relFileName."\n";
+        foreach ($this->things as $thing) {
+            echo "THING:\n" . $thing->masterFile->relFileName . "\n";
             $thing->dump();
             echo "\n";
         }

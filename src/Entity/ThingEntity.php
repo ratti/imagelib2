@@ -19,10 +19,8 @@ namespace App\Entity;
 
 use App\Manager\ThingsManager;
 
-class ThingEntity
+class ThingEntity extends AbstractEntity
 {
-    public $thingsManager;
-
     /* @var \App\Entity\FileEntity $masterFile */
     public $masterFile;
 
@@ -35,8 +33,6 @@ class ThingEntity
     public $masterExif;
 
     public $folderId;
-
-    public $id;
 
     public function dump(){
 
