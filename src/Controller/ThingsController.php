@@ -45,9 +45,11 @@ class ThingsController extends AbstractController
 
     public function createDerivedFilesAction()
     {
-        foreach ($this->loadRepository()->getAll() as $thing) {
+        $thingsRepo=$this->loadRepository();
+        foreach ($thingsRepo->getAll() as $thing) {
             $thing->createAllDerivedFiles();
         }
+        $thingsRepo->save(); /* exif was created here */
     }
 
     public function CleanUpDerivedFilesAction()

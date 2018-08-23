@@ -30,15 +30,19 @@ class ThingEntity extends AbstractEntity
     /* @var \App\Entity\FileEntity $posterFile */
     public $posterFile;
 
+    /* @var \App\Entity\FileEntity $exifFile */
+    public $exifFile;
+
     public $masterExif;
 
     public $folderId;
 
-    public function dump(){
+    public function dump()
+    {
 
-        echo "id: ".$this->id."\n";
+        echo "id: " . $this->id . "\n";
 
-        echo "folder id: ".$this->folderId."\n";
+        echo "folder id: " . $this->folderId . "\n";
 
         echo "master file:\n";
         $this->masterFile->dump();
@@ -46,6 +50,8 @@ class ThingEntity extends AbstractEntity
         $this->thumbnailFile->dump();
         echo "poster file:\n";
         $this->posterFile->dump();
+        echo "exif file:\n";
+        $this->exifFile->dump();
     }
 
     public function __construct(ThingsManager $thingsManager, FileEntity $file)
@@ -55,27 +61,17 @@ class ThingEntity extends AbstractEntity
         $this->masterFile = $file;
         $this->thumbnailFile = $this->generatePath('thumbnail');
         $this->posterFile = $this->generatePath('poster');
+        $this->exifFile = $this->generatePath('exif');
 
-        $this->setExif();
+        #$this->setExif();
     }
 
     public function generatePath($prefix)
     {
         $baseDir = $this->thingsManager->getConfigHelper()->filePathToCache . '/' . $prefix;
-        return new FileEntity($this->thingsManager, $baseDir, $this->masterFile->relFileName . '.jpg');
-    }
-
-    public function setExif()
-    {
-        $file = (string)$this->masterFile;
-        $cmd = 'exiftool -f -n -j -b ' . escapeshellarg($file);
-        $output = `$cmd`;
-        $obj = json_decode($output)[0];
-
-        unset($obj->ThumbnailImage);
-        unset($obj->OtherImage);
-
-        $this->masterExif = $obj;
+        $ext = 'jpg';
+        if ($prefix == 'exif') $ext = 'json';
+        return new FileEntity($this->thingsManager, $baseDir, $this->masterFile->relFileName . ".{$ext}");
     }
 
     public function getOrientation()
@@ -92,27 +88,31 @@ class ThingEntity extends AbstractEntity
     {
         $this->createDerivedThumbnailFile();
         $this->createDerivedPosterFile();
+        $this->createDerivedExifFile();
     }
 
     public function createDerivedThumbnailFile()
     {
-        $this->createDerivedFileAbstract(
-            $inFile = $this->masterFile->absFileName,
-            $outFile = $this->thumbnailFile->absFileName,
-            '256x256'
-        );
+        $inFile = $this->masterFile->absFileName;
+        $outFile = $this->thumbnailFile->absFileName;
+        $this->createDerivedFileAbstract($inFile, $outFile, '256x256');
     }
 
     public function createDerivedPosterFile()
     {
-        $this->createDerivedFileAbstract(
-            $inFile = $this->masterFile->absFileName,
-            $outFile = $this->posterFile->absFileName,
-            '1248x960'
-        );
+        $inFile = $this->masterFile->absFileName;
+        $outFile = $this->posterFile->absFileName;
+        $this->createDerivedFileAbstract($inFile, $outFile, '1248x960');
     }
 
-    public function createDerivedFileAbstract($inFile, $outFile, $size)
+    public function createDerivedExifFile()
+    {
+        $inFile = $this->masterFile->absFileName;
+        $outFile = $this->exifFile->absFileName;
+        $this->createDerivedFileAbstract($inFile, $outFile, 'nonsense.');
+    }
+
+    public function createDerivedFileAbstract($inFile, $outFile, $size = '')
     {
         $outDir = dirname($outFile);
 
@@ -120,7 +120,18 @@ class ThingEntity extends AbstractEntity
 
         if (!file_exists($outFile) || filemtime($inFile) !== filemtime($outFile)) {
 
-            if ($this->isImage()) {
+            if (preg_match('/\.json/uis', $outFile)) {
+                $cmd = 'exiftool -f -n -j -b ' . escapeshellarg($inFile);
+                $json = `$cmd`;
+                $obj = json_decode($json)[0];
+
+                unset($obj->ThumbnailImage);
+                unset($obj->OtherImage);
+
+                $this->masterExif = $obj;
+                file_put_contents($outFile, $json);
+
+            } elseif ($this->isImage()) {
                 $cmd = sprintf('convert %s -resize %s^ -auto-orient -gravity center -extent %s  %s',
                     escapeshellarg($inFile), # infile
                     $size, # resize
@@ -128,7 +139,7 @@ class ThingEntity extends AbstractEntity
                     escapeshellarg($outFile) # outfile
                 );
                 `$cmd`;
-            } elseif ($this->isMovie()){
+            } elseif ($this->isMovie()) {
                 $cmd = sprintf('convert %s[0] -resize %s^ -auto-orient -gravity center -extent %s  %s',
                     escapeshellarg($inFile), # infile
                     $size, # resize
@@ -142,6 +153,19 @@ class ThingEntity extends AbstractEntity
             if (file_exists($outFile)) {
                 touch($outFile, filemtime($inFile));
             }
+        }
+
+        if (preg_match('/\.json/uis', $outFile) && is_null($this->masterExif) && file_exists($outFile)) {
+            # load exif if not generated this time, but json file exists
+            $this->loadExif();
+        }
+    }
+
+    public function loadExif()
+    {
+        if (file_exists($this->exifFile->absFileName)) {
+            $json = file_get_contents($this->exifFile->absFileName);
+            $this->masterExif = json_decode($json);
         }
     }
 

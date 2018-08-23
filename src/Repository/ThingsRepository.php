@@ -149,9 +149,11 @@ class ThingsRepository
             if ($asKey) {
                 $ret[$thing->posterFile->{$attribute}] = true;
                 $ret[$thing->thumbnailFile->{$attribute}] = true;
+                $ret[$thing->exifFile->{$attribute}] = true;
             } else {
                 $ret[] = $thing->posterFile->{$attribute};
                 $ret[] = $thing->thumbnailFile->{$attribute};
+                $ret[] = $thing->exifFile->{$attribute};
             }
         }
         return $ret;

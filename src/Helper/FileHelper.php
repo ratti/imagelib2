@@ -20,6 +20,7 @@ namespace App\Helper;
 
 use App\Entity\FileEntity;
 use App\Entity\FolderEntity;
+use App\Exception\ThingsException;
 use App\Manager\ThingsManager;
 
 class FileHelper
@@ -69,6 +70,8 @@ class FileHelper
 
     public function findFiles($baseDir)
     {
+        if(! is_dir($baseDir)){throw new ThingsException();}
+
         $escapeBaseDir = escapeshellarg($baseDir);
         $cmd = "find -L $escapeBaseDir -type f -print0";
         $results = explode("\x0", `$cmd`);
@@ -78,6 +81,8 @@ class FileHelper
 
     public function findDirs($baseDir)
     {
+        if(! is_dir($baseDir)){throw new ThingsException();}
+
         $escapeBaseDir = escapeshellarg($baseDir);
         $cmd = "find -L $escapeBaseDir -type d -print0";
         $results = explode("\x0", `$cmd`);
