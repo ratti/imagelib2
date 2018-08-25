@@ -20,6 +20,7 @@ namespace App\Controller;
 
 use App\Manager\ThingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ThingsController extends AbstractController
 {
@@ -46,7 +47,7 @@ class ThingsController extends AbstractController
     public function createDerivedFilesAction()
     {
         $thingsRepo=$this->loadRepository();
-        foreach ($thingsRepo->getAll() as $thing) {
+        foreach ($thingsRepo->getAllThings() as $thing) {
             $thing->createAllDerivedFiles();
         }
         $thingsRepo->save(); /* exif was created here */
@@ -72,6 +73,28 @@ class ThingsController extends AbstractController
         $repository=$this->loadRepository();
         $repository->dump();
     }
+
+
+    /**
+     * Matches /folder/*
+     *
+     * @Route("/folder/{folderId}", name="folder_show")
+     */
+    public function show($folderId)
+    {
+        // $slug will equal the dynamic part of the URL
+        // e.g. at /blog/yay-routing, then $slug='yay-routing'
+
+        $thingsRepo=$this->loadRepository();
+        $folder=$thingsRepo->getFolderById($folderId);
+
+        return $this->render('folder/show.html.twig', [
+            'folder' => $folder,
+            'subfolders' => $thingsRepo->getFoldersByFolderIds($folder->subfolderIds),
+            'things' => $thingsRepo->getThingByFolderId($folderId)
+        ]);
+    }
+
 
     /* --------------//--------------//--------------//--------------//-------------- */
 

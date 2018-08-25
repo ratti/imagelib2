@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <a href='/folder/{{ folder.parentId }}'>Up</a> |
+
+    <h1>{{ folder.title }}</h1>
+
+    <hr>
+
+    {% for subfolder in subfolders %}
+        <a href='/folder/{{ subfolder.id }}'>{{ subfolder.title }}</a> |
+    {% endfor %}
+
+    <hr>
+
+    <ul>
+        {% for thing in things %}
+            <li><img src='/thumbnail/{{ thing.thumbnailFile.relFileName }}'></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

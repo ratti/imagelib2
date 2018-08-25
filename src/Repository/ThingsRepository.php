@@ -100,7 +100,8 @@ class ThingsRepository
         $this->folders[$id] = $folderEntity;
         $this->folderIds[$folderEntity->relPath] = $id;
 
-        if (!is_null($folderEntity->parentRelPath)) {
+#        if (!is_null($folderEntity->parentRelPath)) {
+        if ($folderEntity->relPath !== '') {
             $parentId = $this->folderIds[$folderEntity->parentRelPath];
             $folderEntity->parentId = $parentId;
             $this->folders[$parentId]->subfolderIds[] = $id;
@@ -112,6 +113,11 @@ class ThingsRepository
     public function getFolderByPath($relPath)
     {
         return $this->folderIds[$relPath];
+    }
+
+    public function getFolderById($folderId)
+    {
+        return $this->folders[$folderId];
     }
 
     public function addThing(ThingEntity $thingEntity)
@@ -132,14 +138,33 @@ class ThingsRepository
         file_put_contents($fileName, serialize($this));
     }
 
-    public function getAll()
+    public function getAllThings()
     {
         return $this->things;
     }
 
-    public function getById($id)
+    public function getThingById($id)
     {
         return $this->things[$id];
+    }
+
+    public function getThingByFolderId($id)
+    {
+        $folder = $this->getFolderById($id);
+        $ret = array();
+        foreach ($folder->thingsIds as $thingsId) {
+            $ret[] = $this->getThingById($thingsId);
+        }
+        return $ret;
+    }
+
+    public function getFoldersByFolderIds($folderIds)
+    {
+        $ret = array();
+        foreach ($folderIds as $folderId) {
+            $ret[] = $this->getFolderById($folderId);
+        }
+        return $ret;
     }
 
     public function getAllDerivedFiles($attribute = 'absFileName', $asKey = false)
