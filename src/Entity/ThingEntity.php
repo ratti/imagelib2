@@ -132,7 +132,7 @@ class ThingEntity extends AbstractEntity
                 file_put_contents($outFile, $json);
 
             } elseif ($this->isImage()) {
-                $cmd = sprintf('convert %s -resize %s^ -auto-orient -gravity center -extent %s  %s',
+                $cmd = sprintf('convert %s -resize %s -auto-orient -gravity center -extent %s  %s',
                     escapeshellarg($inFile), # infile
                     $size, # resize
                     $size, # extend
@@ -140,7 +140,7 @@ class ThingEntity extends AbstractEntity
                 );
                 `$cmd`;
             } elseif ($this->isMovie()) {
-                $cmd = sprintf('convert %s[0] -resize %s^ -auto-orient -gravity center -extent %s  %s',
+                $cmd = sprintf('convert %s[0] -resize %s -auto-orient -gravity center -extent %s  %s',
                     escapeshellarg($inFile), # infile
                     $size, # resize
                     $size, # extend
