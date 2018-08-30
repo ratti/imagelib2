@@ -17,9 +17,22 @@
     <div class="row" id="things">
         {% for thing in things %}
             <div class="col-4 col-lg-2">
-                <a class="link" href='/poster/{{ thing.posterFile.relFileName }}' title="poster">
-                    <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
-                </a>
+                {% if thing.isImage() %}
+                    <a class="link" href='/poster/{{ thing.posterFile.relFileName }}' title="poster">
+                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
+                    </a>
+                {% endif %}
+                {% if thing.isMovie() %}
+                    <a
+                            href='/master/{{ thing.masterFile.relFileName }}'
+                            title="video"
+                            type="video/mp4"
+                            data-poster="/poster/{{ thing.posterFile.relFileName }}"
+                            data-sources='[{"href": "/master/{{ thing.masterFile.relFileName }}", "type": "video/mp4"}]'
+                    ><img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
+                    </a>
+                {% endif %}
+
             </div>
         {% endfor %}
     </div>
