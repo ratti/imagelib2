@@ -23,11 +23,11 @@
                     ></a>
                 {% elseif thing.isProprietaryMovie() %}
                     <a
-                            href='/video/{{ thing.convertedVideoFile.relFileName }}'
+                            href='/video/{{ thing.derivedVideoFile.relFileName }}'
                             title="video"
                             type="video/mp4"
                             data-poster="/poster/{{ thing.posterFile.relFileName }}"
-                            data-sources='[{"href": "/video/{{ thing.convertedVideoFile.relFileName }}", "type": "video/mp4"}]'
+                            data-sources='[{"href": "/video/{{ thing.derivedVideoFile.relFileName }}", "type": "video/mp4"}]'
                     ><img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
                     </a>
                 {% elseif thing.isMovie() %}

@@ -46,6 +46,7 @@ class ThingEntity extends AbstractEntity
         'IMAGE_TO_POSTER' => 'convert {inFile} -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE}  {outFile}',
         'PROPRIETARY_MOVIE_TO_MP4' => 'ffmpeg -y -i {inFile} -c:v libx264 -c:a aac -pix_fmt yuv420p -movflags faststart -hide_banner {outFile}',
         'MOVIE_TO_THUMBNAIL' => 'convert {inFile}[0] -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE} {outFile}',
+        'MOVIE_TO_POSTER' => 'convert {inFile}[0] -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE} {outFile}',
     );
 
     public function dump()
@@ -103,11 +104,11 @@ class ThingEntity extends AbstractEntity
     {
         if ($this->isProprietaryMovie()) {
             $this->createDerivedVideo();
-            $this->createDerivedPosterFile();
+            $this->createDerivedPosterFileFromDerivedVideo();
             $this->createDerivedThumbnailFileFromDerivedVideo();
         } elseif ($this->isMovie()) {
-            $this->createDerivedThumbnailFile();
-            $this->createDerivedPosterFile();
+            $this->createDerivedThumbnailFileFromVideo();
+            $this->createDerivedPosterFileFromVideo();
         } elseif ($this->isImage()) {
             $this->createDerivedThumbnailFile();
             $this->createDerivedPosterFile();
@@ -119,36 +120,60 @@ class ThingEntity extends AbstractEntity
     {
         $inFile = $this->masterFile->absFileName;
         $outFile = $this->derivedVideoFile->absFileName;
-        $this->createDerivedFileAbstract($inFile, $outFile, 'nonsense.');
+        $this->createDerivedFileFromCmd($this->conversionCommand['PROPRIETARY_MOVIE_TO_MP4'],$inFile, $outFile);
     }
 
-    public function createDerivedThumbnailFile()
+    public function createDerivedPosterFileFromDerivedVideo()
     {
-        $inFile = $this->masterFile->absFileName;
-        $outFile = $this->thumbnailFile->absFileName;
-        $this->createDerivedFileAbstract($inFile, $outFile, '256x256');
+        $inFile = $this->derivedVideoFile->absFileName;
+        $outFile = $this->posterFile->absFileName;
+        $this->createDerivedFileFromCmd($this->conversionCommand['MOVIE_TO_POSTER'],$inFile, $outFile);
     }
 
     public function createDerivedThumbnailFileFromDerivedVideo()
     {
         $inFile = $this->derivedVideoFile->absFileName;
         $outFile = $this->thumbnailFile->absFileName;
-        $this->createDerivedFileAbstract($inFile, $outFile, '256x256');
+        $this->createDerivedFileFromCmd($this->conversionCommand['MOVIE_TO_THUMBNAIL'],$inFile, $outFile);
     }
 
+
+    public function createDerivedPosterFileFromVideo()
+    {
+        $inFile = $this->masterFile->absFileName;
+        $outFile = $this->posterFile->absFileName;
+        $this->createDerivedFileFromCmd($this->conversionCommand['MOVIE_TO_POSTER'],$inFile, $outFile);
+    }
+
+    public function createDerivedThumbnailFileFromVideo()
+    {
+        $inFile = $this->masterFile->absFileName;
+        $outFile = $this->thumbnailFile->absFileName;
+        $this->createDerivedFileFromCmd($this->conversionCommand['MOVIE_TO_THUMBNAIL'],$inFile, $outFile);
+    }
+
+
+
+    public function createDerivedThumbnailFile()
+    {
+        $inFile = $this->masterFile->absFileName;
+        $outFile = $this->thumbnailFile->absFileName;
+        $this->createDerivedFileFromCmd($this->conversionCommand['IMAGE_TO_THUMBNAIL'],$inFile, $outFile);
+    }
 
     public function createDerivedPosterFile()
     {
         $inFile = $this->masterFile->absFileName;
         $outFile = $this->posterFile->absFileName;
-        $this->createDerivedFileAbstract($inFile, $outFile, '1248x960');
+        $this->createDerivedFileFromCmd($this->conversionCommand['IMAGE_TO_POSTER'],$inFile, $outFile);
     }
 
     public function createDerivedExifFile()
     {
         $inFile = $this->masterFile->absFileName;
         $outFile = $this->exifFile->absFileName;
-        $this->createDerivedFileAbstract($inFile, $outFile, 'nonsense.');
+        $this->createDerivedFileFromCmd($this->conversionCommand['IMAGE_TO_EXIF'],$inFile, $outFile);
+
     }
 
     public function createDerivedFileFromCmd($cmd, $inFile, $outFile)
@@ -165,74 +190,21 @@ class ThingEntity extends AbstractEntity
             $cmd = str_replace('{THUMBNAILSIZE}', '256x256', $cmd);
             $cmd = str_replace('{POSTERSIZE}', '1248x960', $cmd);
 
-            echo "$cmd\n";
+            echo "--------------------------------------------------------\n$cmd\n";
+            `$cmd`;
             if (file_exists($outFile)) {
                 touch($outFile, filemtime($inFile));
             }
         }
-
+/*
         if (preg_match('/\.json/uis', $outFile) && is_null($this->masterExif) && file_exists($outFile)) {
             # load exif if not generated this time, but json file exists
             $this->loadExif();
         }
+*/
     }
 
 
-    public function createDerivedFileAbstract($inFile, $outFile, $size = '')
-    {
-        $outDir = dirname($outFile);
-
-        if (!is_dir($outDir)) mkdir($outDir, 0777, true);
-
-        if (!file_exists($outFile) || filemtime($inFile) !== filemtime($outFile)) {
-
-            if (preg_match('/\.json/uis', $outFile)) {
-                $cmd = 'exiftool -f -n -j -b ' . escapeshellarg($inFile);
-                $json = `$cmd`;
-                $obj = json_decode($json)[0];
-
-                unset($obj->ThumbnailImage);
-                unset($obj->OtherImage);
-
-                $this->masterExif = $obj;
-                file_put_contents($outFile, $json);
-
-            } elseif ($this->isImage()) {
-                $cmd = sprintf('convert %s -resize %s -auto-orient -gravity center -extent %s  %s',
-                    escapeshellarg($inFile), # infile
-                    $size, # resize
-                    $size, # extend
-                    escapeshellarg($outFile) # outfile
-                );
-                `$cmd`;
-            } elseif ($this->isProprietaryMovie()) {
-                $cmd = sprintf('ffmpeg -y -i %s -c:v libx264 -c:a aac -pix_fmt yuv420p -movflags faststart -hide_banner %s',
-                    escapeshellarg($inFile), # infile
-                    escapeshellarg($outFile) # outfile
-                );
-                echo "\n\n\n\n\n\n\n\n\n$cmd\n";
-                `$cmd`;
-            } elseif ($this->isMovie()) {
-                $cmd = sprintf('convert %s[0] -resize %s -auto-orient -gravity center -extent %s  %s',
-                    escapeshellarg($inFile), # infile
-                    $size, # resize
-                    $size, # extend
-                    escapeshellarg($outFile) # outfile
-                );
-                `$cmd`;
-
-            }
-
-            if (file_exists($outFile)) {
-                touch($outFile, filemtime($inFile));
-            }
-        }
-
-        if (preg_match('/\.json/uis', $outFile) && is_null($this->masterExif) && file_exists($outFile)) {
-            # load exif if not generated this time, but json file exists
-            $this->loadExif();
-        }
-    }
 
     public function loadExif()
     {
