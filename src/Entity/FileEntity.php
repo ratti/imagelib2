@@ -56,8 +56,8 @@ class FileEntity
 
         $path_parts = pathinfo($this->absFileName);
 
-        $this->relDirName = pathinfo($relFileName,PATHINFO_DIRNAME);
-        if($this->relDirName==='.')$this->relDirName='';
+        $this->relDirName = pathinfo($relFileName, PATHINFO_DIRNAME);
+        if ($this->relDirName === '.') $this->relDirName = '';
 
         $this->absDirName = $path_parts['dirname'];
         $this->basename = $path_parts['basename'];
@@ -70,6 +70,11 @@ class FileEntity
     public function __toString()
     {
         return $this->absFileName;
+    }
+
+    public function isProprietaryMovie()
+    {
+        return isset($this->extension) && strlen($this->extension) && false !== array_search(strtolower($this->extension), $this->thingsManager->getConfigHelper()->fileExtensionsOfProprietaryMovies);
     }
 
     public function isMovie()

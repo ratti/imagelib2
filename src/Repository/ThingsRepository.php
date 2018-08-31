@@ -175,10 +175,12 @@ class ThingsRepository
                 $ret[$thing->posterFile->{$attribute}] = true;
                 $ret[$thing->thumbnailFile->{$attribute}] = true;
                 $ret[$thing->exifFile->{$attribute}] = true;
+                $ret[$thing->derivedVideoFile->{$attribute}] = true;
             } else {
                 $ret[] = $thing->posterFile->{$attribute};
                 $ret[] = $thing->thumbnailFile->{$attribute};
                 $ret[] = $thing->exifFile->{$attribute};
+                $ret[] = $thing->derivedVideoFile->{$attribute};
             }
         }
         return $ret;

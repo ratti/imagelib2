@@ -19,10 +19,18 @@
             <div class="col-4 col-lg-2">
                 {% if thing.isImage() %}
                     <a class="link" href='/poster/{{ thing.posterFile.relFileName }}' title="poster">
-                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
+                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail"
+                    ></a>
+                {% elseif thing.isProprietaryMovie() %}
+                    <a
+                            href='/video/{{ thing.convertedVideoFile.relFileName }}'
+                            title="video"
+                            type="video/mp4"
+                            data-poster="/poster/{{ thing.posterFile.relFileName }}"
+                            data-sources='[{"href": "/video/{{ thing.convertedVideoFile.relFileName }}", "type": "video/mp4"}]'
+                    ><img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
                     </a>
-                {% endif %}
-                {% if thing.isMovie() %}
+                {% elseif thing.isMovie() %}
                     <a
                             href='/master/{{ thing.masterFile.relFileName }}'
                             title="video"

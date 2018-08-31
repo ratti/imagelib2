@@ -12,3 +12,5 @@
 .idea
 /public/poster
 /public/thumbnail
+/public/master
+/public/video

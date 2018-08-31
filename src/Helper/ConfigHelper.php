@@ -37,7 +37,7 @@ class ConfigHelper
 
     public $fileExtensionsOfBasicMovies;
     public $fileExtensionsOfProprietaryMovies;
-    public $fileExtensionsOfMovies ;
+    public $fileExtensionsOfMovies;
 
     public $fileExtensionsOfThings;
 
@@ -53,11 +53,11 @@ class ConfigHelper
         #Lowercase!
         $this->fileExtensionsOfBasicImages = array('jpg', 'jpeg');
         $this->fileExtensionsOfRawImages = array('dng', 'raw');
-        $this->fileExtensionsOfImages ;
+        $this->fileExtensionsOfImages;
 
         $this->fileExtensionsOfBasicMovies = array('mp4');
-        $this->fileExtensionsOfProprietaryMovies = array('mov');
-        $this->fileExtensionsOfMovies ;
+        $this->fileExtensionsOfProprietaryMovies = array('mov', 'avi', '3gp');
+        $this->fileExtensionsOfMovies;
 
         $this->fileExtensionsOfThings = array_merge(
             $this->fileExtensionsOfBasicImages,
@@ -76,16 +76,16 @@ class ConfigHelper
             $this->fileExtensionsOfRawImages
         );
 
-        $this->derivedFiles=array(
-        'thumbnail'=>array(
-            'width'=>200,
-            'height'=>150,
-        ),
-        'poster'=>array(
-            'width'=>1200,
-            'height'=>900,
-        ),
-    );
+        $this->derivedFiles = array(
+            'thumbnail' => array(
+                'width' => 200,
+                'height' => 150,
+            ),
+            'poster' => array(
+                'width' => 1200,
+                'height' => 900,
+            ),
+        );
 
     }
 
