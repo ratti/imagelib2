@@ -22,6 +22,7 @@ use App\Entity\FileEntity;
 use App\Entity\FolderEntity;
 use App\Entity\ThingEntity;
 use App\Manager\ThingsManager;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ThingsRepository
 {
@@ -34,6 +35,9 @@ class ThingsRepository
     /* @var $folders FolderEntity[] */
     public $folders = array();
     public $folderIds = array();
+
+    // Logging helper
+    private $logLastRelDirName;
 
     public function init(ThingsManager $thingsManager)
     {
@@ -55,9 +59,6 @@ class ThingsRepository
         $files = $this->thingsManager->getFileHelper()->findThings($baseDir);
         foreach ($files as $file) {
             $thingEntity = $this->addThing(new ThingEntity($this->thingsManager, $file));
-#            $folderEntity = $this->registerFolder($thingEntity);
-#            $thingEntity->folderId = $folderEntity->id;
-#            $folderEntity->thingsIds[] = $thingEntity->id;
         }
     }
 
@@ -126,10 +127,24 @@ class ThingsRepository
         $thingEntity->id = $id;
         $this->things[$id] = $thingEntity;
 
-        $folderId = $this->getFolderByPath($thingEntity->masterFile->relDirName);
+        $relDirName = $thingEntity->masterFile->relDirName;
+        $this->logFolder($relDirName);
+        $folderId = $this->getFolderByPath($relDirName);
         $this->folders[$folderId]->thingsIds[] = $id;
         $thingEntity->folderId = $id;
         return $thingEntity;
+    }
+
+    public function logFolder($relDirName)
+    {
+        /** @var OutputInterface $output */
+        $output = $this->thingsManager->outputInterface;
+        if ($output && $output->isVerbose()) {
+            if ($relDirName != $this->logLastRelDirName) {
+                $this->logLastRelDirName = $relDirName;
+                $output->writeln("Folder: <info>$relDirName</info>");
+            }
+        }
     }
 
     public function save()

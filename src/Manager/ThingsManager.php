@@ -22,6 +22,8 @@ use App\Helper\ConfigHelper;
 use App\Helper\FileHelper;
 use App\Repository\ThingsRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ThingsManager
 {
@@ -29,6 +31,13 @@ class ThingsManager
     private $configHelper;
     private $fileHelper;
     private $thingsRepository;
+
+    /** @var  InputInterface $inputInterface */
+    public     $inputInterface;
+    /** @var  OutputInterface $outputInterface */
+    public     $outputInterface;
+
+
 
     public function __construct(LoggerInterface $logger, ConfigHelper $configHelper, FileHelper $fileHelper, ThingsRepository $thingsRepository)
     {

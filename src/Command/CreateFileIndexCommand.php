@@ -58,6 +58,7 @@ class CreateFileIndexCommand extends Command
     public function __construct(ThingsManager $thingsManager, ThingsController $thingsController)
     {
         $this->thingsController = $thingsController;
+        $this->thingsManager=$thingsManager;
         $thingsController->__construct($thingsManager);
         parent::__construct();
     }
@@ -69,7 +70,11 @@ class CreateFileIndexCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('creates a repo file from the image dir')#            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')#            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->setDescription('creates a repo file from the image dir')
+ /*
+            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+ */
         ;
     }
 
@@ -94,7 +99,9 @@ class CreateFileIndexCommand extends Command
 
                $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
         */
-
+        $this->thingsManager->inputInterface=$input;
+        $this->thingsManager->outputInterface=$output;
+        
         $this->thingsController->createFileIndexAction();
         //print_r($thingsRepo->things);
 
