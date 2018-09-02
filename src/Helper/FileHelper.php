@@ -56,10 +56,11 @@ class FileHelper
 
     public function findFolders($baseDir)
     {
+        $ret = array();
         $results = $this->findDirs($baseDir);
         foreach ($results as $result) {
             $result = substr($result, mb_strlen($baseDir) + 1);
-            if($result===false) $result=''; # Funny enough, root dir ''.
+            if ($result === false) $result = ''; # Funny enough, root dir ''.
             if (!strlen($result) || strcmp($result[0], '.') !== 0) {
                 $folder = new FolderEntity($this->thingsManager, $baseDir, $result);
                 $ret[] = $folder;
@@ -70,10 +71,11 @@ class FileHelper
 
     public function findFiles($baseDir)
     {
-        if(! is_dir($baseDir)){throw new ThingsException();}
+        if (!is_dir($baseDir)) throw new ThingsException();
 
         $escapeBaseDir = escapeshellarg($baseDir);
-        $cmd = "find -L $escapeBaseDir -type f -print0";
+        $escapeblacklistedFoldersRegExp = escapeshellarg($this->thingsManager->getConfigHelper()->blacklistedFoldersRegExp);
+        $cmd = "find -E -L $escapeBaseDir -type f -not -regex " . $escapeblacklistedFoldersRegExp . " -print0";
         $results = explode("\x0", `$cmd`);
         if (!strlen($results[count($results) - 1])) unset($results[count($results) - 1]);
         return $results;
@@ -81,10 +83,11 @@ class FileHelper
 
     public function findDirs($baseDir)
     {
-        if(! is_dir($baseDir)){throw new ThingsException();}
+        if (!is_dir($baseDir)) throw new ThingsException();
 
         $escapeBaseDir = escapeshellarg($baseDir);
-        $cmd = "find -L $escapeBaseDir -type d -print0";
+        $escapeblacklistedFoldersRegExp = escapeshellarg($this->thingsManager->getConfigHelper()->blacklistedFoldersRegExp);
+        $cmd = "find -E -L $escapeBaseDir -type d -not -regex " . $escapeblacklistedFoldersRegExp . " -print0";
         $results = explode("\x0", `$cmd`);
         if (!strlen($results[count($results) - 1])) unset($results[count($results) - 1]);
         sort($results); # Important for building recursive tree: Children after parent!

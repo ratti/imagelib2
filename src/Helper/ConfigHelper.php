@@ -43,6 +43,8 @@ class ConfigHelper
 
     public $derivedFiles;
 
+    public $blacklistedFoldersRegExp;
+
     public $webroot;
 
     public function __construct()

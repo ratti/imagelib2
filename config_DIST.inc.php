@@ -30,6 +30,8 @@ $this->fileExtensionsOfImages = array_merge(
     $this->fileExtensionsOfRawImages
 );
 
+$this->blacklistedFoldersRegExp='.*/(_misc|tmp)/.*';
+
 $this->derivedFiles = array(
     'thumbnail' => array(
         'width' => 200,
