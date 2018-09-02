@@ -32,6 +32,8 @@ $this->fileExtensionsOfImages = array_merge(
 
 $this->blacklistedFoldersRegExp='.*/(_misc|tmp)/.*';
 
+$this->cmdFind= preg_match('/darwin/uis',`uname -a`)? 'gfind' : 'find';
+
 $this->derivedFiles = array(
     'thumbnail' => array(
         'width' => 200,

@@ -73,9 +73,10 @@ class FileHelper
     {
         if (!is_dir($baseDir)) throw new ThingsException();
 
+        $find = $this->thingsManager->getConfigHelper()->cmdFind;
         $escapeBaseDir = escapeshellarg($baseDir);
         $escapeblacklistedFoldersRegExp = escapeshellarg($this->thingsManager->getConfigHelper()->blacklistedFoldersRegExp);
-        $cmd = "find -E -L $escapeBaseDir -type f -not -regex " . $escapeblacklistedFoldersRegExp . " -print0";
+        $cmd = "$find -L $escapeBaseDir -regextype posix-extended -type f -not -regex " . $escapeblacklistedFoldersRegExp . " -print0";
         $results = explode("\x0", `$cmd`);
         if (!strlen($results[count($results) - 1])) unset($results[count($results) - 1]);
         return $results;
@@ -85,9 +86,10 @@ class FileHelper
     {
         if (!is_dir($baseDir)) throw new ThingsException();
 
+        $find = $this->thingsManager->getConfigHelper()->cmdFind;
         $escapeBaseDir = escapeshellarg($baseDir);
         $escapeblacklistedFoldersRegExp = escapeshellarg($this->thingsManager->getConfigHelper()->blacklistedFoldersRegExp);
-        $cmd = "find -E -L $escapeBaseDir -type d -not -regex " . $escapeblacklistedFoldersRegExp . " -print0";
+        $cmd = "$find -L $escapeBaseDir -regextype posix-extended -type d -not -regex " . $escapeblacklistedFoldersRegExp . " -print0";
         $results = explode("\x0", `$cmd`);
         if (!strlen($results[count($results) - 1])) unset($results[count($results) - 1]);
         sort($results); # Important for building recursive tree: Children after parent!
