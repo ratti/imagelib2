@@ -7,7 +7,7 @@ if (strpos($hostname, 'myC64atHome') !== false) {
 } elseif (strpos($hostname, 'myWebServer') !== false) {
     $this->filePathToThings = '/home/me/MyPhotos';
 } else {
-    die("Your config here:\n" . __FILE__ . ': Line ' . __LINE__);
+    die("Your config here:\n" . __FILE__ . ': Line ' . __LINE__ . "\n\n");
 }
 
 $this->filePathToCache = __DIR__ . '/../Cache/Ereignisse2';
@@ -39,9 +39,9 @@ $this->fileExtensionsOfImages = array_merge(
     $this->fileExtensionsOfRawImages
 );
 
-$this->blacklistedFoldersRegExp='.*/(_misc|tmp)(/.*|$)';
+$this->blacklistedFoldersRegExp = '.*/(_misc|tmp)(/.*|$)';
 
-$this->cmdFind= preg_match('/darwin/uis',`uname -a`)? 'gfind' : 'find';
+$this->cmdFind = preg_match('/darwin/uis', `uname -a`) ? 'gfind' : 'find';
 
 $this->derivedFiles = array(
     'thumbnail' => array(
