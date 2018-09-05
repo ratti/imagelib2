@@ -1,6 +1,15 @@
 <?php
 
-$this->filePathToThings = __DIR__ . '/../Ereignisse2';
+
+$hostname = `hostname`;
+if (strpos($hostname, 'myC64atHome') !== false) {
+    $this->filePathToThings = __DIR__ . '/../my_photos';
+} elseif (strpos($hostname, 'myWebServer') !== false) {
+    $this->filePathToThings = '/home/me/MyPhotos';
+} else {
+    die("Your config here:\n" . __FILE__ . ': Line ' . __LINE__);
+}
+
 $this->filePathToCache = __DIR__ . '/../Cache/Ereignisse2';
 $this->filePathToRepo = __DIR__ . '/../Ereignisse2.repo';
 
@@ -30,7 +39,7 @@ $this->fileExtensionsOfImages = array_merge(
     $this->fileExtensionsOfRawImages
 );
 
-$this->blacklistedFoldersRegExp='.*/(_misc|tmp)/.*';
+$this->blacklistedFoldersRegExp='.*/(_misc|tmp)(/.*|$)';
 
 $this->cmdFind= preg_match('/darwin/uis',`uname -a`)? 'gfind' : 'find';
 

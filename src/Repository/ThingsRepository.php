@@ -21,6 +21,8 @@ namespace App\Repository;
 use App\Entity\FileEntity;
 use App\Entity\FolderEntity;
 use App\Entity\ThingEntity;
+use App\Helper\ConfigHelper;
+use App\Helper\FileHelper;
 use App\Manager\ThingsManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,6 +40,12 @@ class ThingsRepository
 
     // Logging helper
     private $logLastRelDirName;
+
+    /* @var ConfigHelper $configHelper */
+    public $configHelper;
+
+    /* @var FileHelper $fileHelper */
+    public $fileHelper;
 
     public function init(ThingsManager $thingsManager)
     {

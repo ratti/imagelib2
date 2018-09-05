@@ -46,7 +46,7 @@ class ThingsController extends AbstractController
 
     public function createDerivedFilesAction()
     {
-        $thingsRepo=$this->loadRepository();
+        $thingsRepo = $this->loadRepository();
         foreach ($thingsRepo->getAllThings() as $thing) {
             $thing->createAllDerivedFiles();
         }
@@ -69,8 +69,9 @@ class ThingsController extends AbstractController
         }
     }
 
-    public function dumpRepositoryAction(){
-        $repository=$this->loadRepository();
+    public function dumpRepositoryAction()
+    {
+        $repository = $this->loadRepository();
         $repository->dump();
     }
 
@@ -78,15 +79,15 @@ class ThingsController extends AbstractController
     /**
      * Matches /folder/*
      *
-     * @Route("/folder/{folderId}", name="folder_show")
+     * @Route("/folder/{folderId}", name="folder_action")
      */
-    public function show($folderId)
+    public function folderAction($folderId = 0)
     {
         // $slug will equal the dynamic part of the URL
         // e.g. at /blog/yay-routing, then $slug='yay-routing'
 
-        $thingsRepo=$this->loadRepository();
-        $folder=$thingsRepo->getFolderById($folderId);
+        $thingsRepo = $this->loadRepository();
+        $folder = $thingsRepo->getFolderById($folderId);
 
         return $this->render('folder/show.html.twig', [
             'folder' => $folder,

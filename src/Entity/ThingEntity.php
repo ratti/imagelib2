@@ -45,7 +45,7 @@ class ThingEntity extends AbstractEntity
         'IMAGE_TO_THUMBNAIL' => 'convert {inFile} -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE}  {outFile}',
         'IMAGE_TO_POSTER' => 'convert {inFile} -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE}  {outFile}',
         'PROPRIETARY_MOVIE_TO_MP4' => 'ffmpeg -y -i {inFile} -c:v libx264 -c:a aac -pix_fmt yuv420p -movflags faststart -hide_banner {outFile}',
-        'MOVIE_TO_THUMBNAIL' => 'convert {inFile}[0] -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE} {outFile}',
+        'MOVIE_TO_THUMBNAIL' => 'convert {inFile}[0] -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE} {PLAYBUTTONTHUMBFILE} -compose dissolve -define compose:args=90 -composite {outFile}',
         'MOVIE_TO_POSTER' => 'convert {inFile}[0] -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE} {outFile}',
     );
 
@@ -189,6 +189,7 @@ class ThingEntity extends AbstractEntity
             $cmd = str_replace('{outFile}', escapeshellarg($outFile), $cmd);
             $cmd = str_replace('{THUMBNAILSIZE}', '256x256', $cmd);
             $cmd = str_replace('{POSTERSIZE}', '1248x960', $cmd);
+            $cmd = str_replace('{PLAYBUTTONTHUMBFILE}', escapeshellarg(__DIR__.'/../lib/movie_overlay.png'), $cmd);
 
             echo "--------------------------------------------------------\n$cmd\n";
             `$cmd`;

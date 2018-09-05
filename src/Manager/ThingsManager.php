@@ -33,10 +33,9 @@ class ThingsManager
     private $thingsRepository;
 
     /** @var  InputInterface $inputInterface */
-    public     $inputInterface;
+    public $inputInterface;
     /** @var  OutputInterface $outputInterface */
-    public     $outputInterface;
-
+    public $outputInterface;
 
 
     public function __construct(LoggerInterface $logger, ConfigHelper $configHelper, FileHelper $fileHelper, ThingsRepository $thingsRepository)
@@ -59,7 +58,11 @@ class ThingsManager
 
     public function loadRepository($fileName)
     {
-        $this->thingsRepository=unserialize(file_get_contents($fileName));
+        // loading the repo will load the old config, so we overwrite it with the current one.
+        $currentConfig = clone $this->configHelper;
+        $this->thingsRepository = unserialize(file_get_contents($fileName));
+        $this->thingsRepository->configHelper = $currentConfig;
+
         return $this->thingsRepository;
     }
 
