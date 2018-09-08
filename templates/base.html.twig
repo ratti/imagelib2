@@ -7,8 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('lib/bootstrap-4.1.3-dist/css/bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('css/custom-style.css') }}"/>
     <link rel="stylesheet" href="{{ asset('lib/blueimp/css/blueimp-gallery.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom-style.css') }}"/>
 
     <title>{% block title %}Welcome!{% endblock %}</title>
 
@@ -16,42 +16,23 @@
 </head>
 <body>
 
-<div class=" container-fluid
-    ">
+
+<div class="container-fluid">
     {% block body %}{% endblock %}
-    </div>
+</div>
 
+{% block lightbox %}{% endblock %}
 
-    <!-- The Gallery as lightbox dialog, should be a child element of the document body -->
-    <div id="blueimp-gallery" class="blueimp-gallery">
-        <div class="slides"></div>
-        <h3 class="title"></h3>
-        <a class="prev">‹</a>
-        <a class="next">›</a>
-        <a class="close">×</a>
-        <a class="play-pause"></a>
-        <ol class="indicator"></ol>
-    </div>
+{% block javascripts %}{% endblock %}
 
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{{ asset('lib/jquery/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('lib/popper1.14.3/popper.min.js') }}"></script>
+<script src="{{ asset('lib/bootstrap-4.1.3-dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('lib/blueimp/js/jquery.blueimp-gallery.min.js') }}"></script>
 
-    {% block javascripts %}{% endblock %}
+{% block inlinejavascripts %}{% endblock %}
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{{ asset('lib/jquery/jquery-3.3.1.min.js') }}"></script>
-    <script src="{{ asset('lib/popper1.14.3//popper.min.js') }}"></script>
-    <script src="{{ asset('lib/bootstrap-4.1.3-dist/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('lib/blueimp/js/blueimp-gallery.min.js') }}"></script>
-
-    <script>
-        document.getElementById('things').onclick = function (event) {
-            event = event || window.event;
-            var target = event.target || event.srcElement,
-                link = target.src ? target.parentNode : target,
-                options = {index: link, event: event},
-                links = this.getElementsByTagName('a');
-            blueimp.Gallery(links, options);
-        };
-    </script>
-    </body>
+</body>
 </html>

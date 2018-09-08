@@ -18,6 +18,7 @@
 namespace App\Controller;
 
 
+use App\Entity\ThingEntity;
 use App\Manager\ThingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,9 +84,6 @@ class ThingsController extends AbstractController
      */
     public function folderAction($folderId = 0)
     {
-        // $slug will equal the dynamic part of the URL
-        // e.g. at /blog/yay-routing, then $slug='yay-routing'
-
         $thingsRepo = $this->loadRepository();
         $folder = $thingsRepo->getFolderById($folderId);
 
@@ -94,6 +92,22 @@ class ThingsController extends AbstractController
             'subfolders' => $thingsRepo->getFoldersByFolderIds($folder->subfolderIds),
             'things' => $thingsRepo->getThingByFolderId($folderId)
         ]);
+    }
+
+    /**
+     * Matches /download/*
+     *
+     * @Route("/download/{thingId}", name="download_action")
+     */
+    public function downloadAction($thingId)
+    {
+
+        $thingsRepo = $this->loadRepository();
+
+        /* @var ThingEntity $thing */
+        $thing = $thingsRepo->getThingById($thingId);
+
+        return $this->file($thing->masterFile->absFileName);
     }
 
 

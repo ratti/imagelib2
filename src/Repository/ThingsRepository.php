@@ -166,6 +166,10 @@ class ThingsRepository
         return $this->things;
     }
 
+    /**
+     * @param $id
+     * @return ThingEntity
+     */
     public function getThingById($id)
     {
         return $this->things[$id];

@@ -18,31 +18,73 @@
         {% for thing in things %}
             <div class="col-4 col-lg-2">
                 {% if thing.isImage() %}
-                    <a class="link" href='/poster/{{ thing.posterFile.relFileName }}' title="poster">
-                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail"
-                    ></a>
+                    <a class="thing" href='/poster/{{ thing.posterFile.relFileName }}'
+                       title="poster"
+                       data-gallery
+                       data-thingId="{{ thing.id }}"
+                    >
+                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
+                    </a>
                 {% elseif thing.isProprietaryMovie() %}
-                    <a
-                            href='/video/{{ thing.derivedVideoFile.relFileName }}'
-                            title="video"
-                            type="video/mp4"
-                            data-poster="/poster/{{ thing.posterFile.relFileName }}"
-                            data-sources='[{"href": "/video/{{ thing.derivedVideoFile.relFileName }}", "type": "video/mp4"}]'
-                    ><img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
+                    <a class='thing'
+                       href='/video/{{ thing.derivedVideoFile.relFileName }}'
+                       title="video"
+                       type="video/mp4"
+                       data-poster="/poster/{{ thing.posterFile.relFileName }}"
+                       data-sources='[{"href": "/video/{{ thing.derivedVideoFile.relFileName }}", "type": "video/mp4"}]'
+                       data-gallery
+                       data-thingId="{{ thing.id }}"
+                    >
+                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
                     </a>
                 {% elseif thing.isMovie() %}
-                    <a
-                            href='/master/{{ thing.masterFile.relFileName }}'
-                            title="video"
-                            type="video/mp4"
-                            data-poster="/poster/{{ thing.posterFile.relFileName }}"
-                            data-sources='[{"href": "/master/{{ thing.masterFile.relFileName }}", "type": "video/mp4"}]'
-                    ><img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
+                    <a class='thing'
+                       href='/master/{{ thing.masterFile.relFileName }}'
+                       title="video"
+                       type="video/mp4"
+                       data-poster="/poster/{{ thing.posterFile.relFileName }}"
+                       data-sources='[{"href": "/master/{{ thing.masterFile.relFileName }}", "type": "video/mp4"}]'
+                       data-gallery
+                       data-thingId="{{ thing.id }}"
+                    >
+                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
                     </a>
                 {% endif %}
 
+                <p><a href='/download/{{ thing.id }}'>DOWNLOAD</a></p>
             </div>
         {% endfor %}
     </div>
+
+{% endblock %}
+
+
+{% block lightbox %}
+
+    <!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+        <div class="slides"></div>
+        <h3 class="title"></h3>
+        <p class="download"></p>
+        <a class="prev">‹</a>
+        <a class="next">›</a>
+        <a class="close">×</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+    </div>
+
+{% endblock %}
+
+{% block inlinejavascripts %}
+
+    <script type=application/javascript>
+
+        $('#blueimp-gallery').on('slide', function (event, index, slide) {
+            var thing = $('#things .thing').eq(index)[0];
+            var thingid = $(thing).data('thingid')
+            $('#blueimp-gallery').find('.download').html("<a href='/download/" + thingid + "'>DOWNLOAD</a>");
+        });
+
+    </script>
 
 {% endblock %}

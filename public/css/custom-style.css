@@ -5,3 +5,14 @@ body {
 .thumbnail{
     width:100%;
 }
+
+.blueimp-gallery > .download {
+    position: absolute;
+    top: 30px;
+    left: 15px;
+    color: #fff;
+    display: none;
+}
+.blueimp-gallery-controls > .download {
+    display: block;
+}
