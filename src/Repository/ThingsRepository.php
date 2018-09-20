@@ -182,7 +182,12 @@ class ThingsRepository
         foreach ($folder->thingsIds as $thingsId) {
             $ret[] = $this->getThingById($thingsId);
         }
+        uasort($ret, array($this, 'sortThingsArray'));
         return $ret;
+    }
+
+    public function sortThingsArray(ThingEntity $a, ThingEntity $b){
+        return $a->masterFile->absFileName <=> $b->masterFile->absFileName;
     }
 
     public function getFoldersByFolderIds($folderIds)
