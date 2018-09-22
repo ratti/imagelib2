@@ -81,6 +81,8 @@ class ThingsController extends AbstractController
      * Matches /folder/*
      *
      * @Route("/folder/{folderId}", name="folder_action")
+     * @param int $folderId
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function folderAction($folderId = 0)
     {

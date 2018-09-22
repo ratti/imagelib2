@@ -1,9 +1,14 @@
 body {
-    background-color: #868686;
+    background-color: #000;
+    color:#fff;
 }
 
-.thumbnail{
-    width:100%;
+h1,h2,h3,h4,h5,h6,h7 {
+    color:#fff;
+}
+
+.thumbnail {
+    width: 100%;
 }
 
 .blueimp-gallery > .download {
@@ -13,6 +18,33 @@ body {
     color: #fff;
     display: none;
 }
+
 .blueimp-gallery-controls > .download {
     display: block;
+}
+
+.center-screen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100px;
+    height: 100px;
+}
+
+.icon {
+    width:32px;
+    height:32px;
+}
+
+img.download {
+    position:relative;
+    top:-32px;
+}
+
+#blueimp-gallery h3.title {
+    font-size: 10px;
+    top:0;
 }

@@ -2,14 +2,16 @@
 
 {% block body %}
 
-    <a href='/folder/{{ folder.parentId }}'>Up</a> |
+    {% if folder.parentId | length %}
+        <a href='/folder/{{ folder.parentId }}'>Up</a>
+    {% endif %}
 
     <h1>{{ folder.title }}</h1>
 
     <hr>
 
     {% for subfolder in subfolders %}
-        <a href='/folder/{{ subfolder.id }}'>{{ subfolder.title }}</a> |
+        <a href='/folder/{{ subfolder.id }}'>{{ subfolder.title }}</a><br>
     {% endfor %}
 
     <hr>
@@ -19,7 +21,7 @@
             <div class="col-4 col-lg-2">
                 {% if thing.isImage() %}
                     <a class="thing" href='/poster/{{ thing.posterFile.relFileName }}'
-                       title="poster"
+                       title="{{ thing.masterFile.basename }}"
                        data-gallery
                        data-thingId="{{ thing.id }}"
                     >
@@ -28,7 +30,7 @@
                 {% elseif thing.isProprietaryMovie() %}
                     <a class='thing'
                        href='/video/{{ thing.derivedVideoFile.relFileName }}'
-                       title="video"
+                       title="{{ thing.masterFile.basename }}"
                        type="video/mp4"
                        data-poster="/poster/{{ thing.posterFile.relFileName }}"
                        data-sources='[{"href": "/video/{{ thing.derivedVideoFile.relFileName }}", "type": "video/mp4"}]'
@@ -40,7 +42,7 @@
                 {% elseif thing.isMovie() %}
                     <a class='thing'
                        href='/master/{{ thing.masterFile.relFileName }}'
-                       title="video"
+                       title="{{ thing.masterFile.basename }}"
                        type="video/mp4"
                        data-poster="/poster/{{ thing.posterFile.relFileName }}"
                        data-sources='[{"href": "/master/{{ thing.masterFile.relFileName }}", "type": "video/mp4"}]'
@@ -51,7 +53,9 @@
                     </a>
                 {% endif %}
 
-                <p><a href='/download/{{ thing.id }}'>DOWNLOAD</a></p>
+                <p><a href='/download/{{ thing.id }}'>
+                        <img class="icon download" src='/img/download.png'>
+                    </a></p>
             </div>
         {% endfor %}
     </div>
@@ -82,7 +86,7 @@
         $('#blueimp-gallery').on('slide', function (event, index, slide) {
             var thing = $('#things .thing').eq(index)[0];
             var thingid = $(thing).data('thingid')
-            $('#blueimp-gallery').find('.download').html("<a href='/download/" + thingid + "'>DOWNLOAD</a>");
+            $('#blueimp-gallery').find('.download').html("<a href='/download/" + thingid + "'><img class='icon download_poster' src='/img/download.png'></a>");
         });
 
     </script>
