@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% block title %}{{ folder.title }}{% endblock %}
+
 {% block body %}
 
     {% if folder.parentId | length %}
