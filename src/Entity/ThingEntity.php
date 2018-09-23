@@ -42,11 +42,11 @@ class ThingEntity extends AbstractEntity
 
     public $conversionCommand = array(
         'IMAGE_TO_EXIF' => 'exiftool -f -n -j -b {inFile} > {outFile}',
-        'IMAGE_TO_THUMBNAIL' => 'convert {inFile} -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE}  {outFile}',
-        'IMAGE_TO_POSTER' => 'convert {inFile} -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE}  {outFile}',
+        'IMAGE_TO_THUMBNAIL' => 'convert {inFile} -background none -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE}  {outFile}',
+        'IMAGE_TO_POSTER' => 'convert {inFile} -background none -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE}  {outFile}',
         'PROPRIETARY_MOVIE_TO_MP4' => 'ffmpeg -y -i {inFile} -c:v libx264 -c:a aac -pix_fmt yuv420p -movflags faststart -hide_banner {outFile}',
-        'MOVIE_TO_THUMBNAIL' => 'convert {inFile}[0] -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE} {PLAYBUTTONTHUMBFILE} -compose dissolve -define compose:args=90 -composite {outFile}',
-        'MOVIE_TO_POSTER' => 'convert {inFile}[0] -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE} {outFile}',
+        'MOVIE_TO_THUMBNAIL' => 'convert {inFile}[0] -background none -resize {THUMBNAILSIZE} -auto-orient -gravity center -extent {THUMBNAILSIZE} {PLAYBUTTONTHUMBFILE} -compose dissolve -define compose:args=90 -composite {outFile}',
+        'MOVIE_TO_POSTER' => 'convert {inFile}[0] -background none -resize {POSTERSIZE} -auto-orient -gravity center -extent {POSTERSIZE} {outFile}',
     );
 
     public function dump()
@@ -84,7 +84,7 @@ class ThingEntity extends AbstractEntity
     public function generatePath($prefix)
     {
         $baseDir = $this->thingsManager->getConfigHelper()->filePathToCache . '/' . $prefix;
-        $ext = 'jpg';
+        $ext = 'png';
         if ($prefix == 'exif') $ext = 'json';
         if ($prefix == 'video') $ext = 'mp4';
         return new FileEntity($this->thingsManager, $baseDir, $this->masterFile->relFileName . ".{$ext}");
