@@ -101,8 +101,8 @@ class CreateFileIndexCommand extends Command
         */
         $this->thingsManager->inputInterface=$input;
         $this->thingsManager->outputInterface=$output;
-        
-        $this->thingsController->createFileIndexAction();
+
+        $this->thingsController->createNewIndexAction();
         //print_r($thingsRepo->things);
 
 

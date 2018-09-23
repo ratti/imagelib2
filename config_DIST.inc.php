@@ -53,3 +53,8 @@ $this->derivedFiles = array(
         'height' => 900,
     ),
 );
+
+$this->mysqlUser='root';
+$this->mysqlPassword='mysql';
+$this->mysqlHost='127.0.0.1';
+$this->mysqlDatabase='imagelib2';

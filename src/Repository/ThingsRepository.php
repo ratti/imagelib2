@@ -23,7 +23,9 @@ use App\Entity\FolderEntity;
 use App\Entity\ThingEntity;
 use App\Helper\ConfigHelper;
 use App\Helper\FileHelper;
+use App\Helper\MysqlHelper;
 use App\Manager\ThingsManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ThingsRepository
@@ -46,6 +48,9 @@ class ThingsRepository
 
     /* @var FileHelper $fileHelper */
     public $fileHelper;
+
+    /* @var LoggerInterface $logger*/
+    public $logger;
 
     public function init(ThingsManager $thingsManager)
     {
@@ -139,7 +144,7 @@ class ThingsRepository
         $this->logFolder($relDirName);
         $folderId = $this->getFolderByPath($relDirName);
         $this->folders[$folderId]->thingsIds[] = $id;
-        $thingEntity->folderId = $id;
+        $thingEntity->folderId = $folderId;
         return $thingEntity;
     }
 
@@ -161,6 +166,21 @@ class ThingsRepository
         file_put_contents($fileName, serialize($this));
     }
 
+    public function saveDb()
+    {
+        $db=$this->thingsManager->getMysqlHelper();
+        $db->query('TRUNCATE things');
+        $db->query('TRUNCATE folders');
+
+        foreach ($this->things as $id => $thing) {
+            $db->query('REPLACE INTO things SET id='.$id.' , folderid='.$thing->folderId.', payload="'.$db->quote(serialize($thing)).'"');
+        }
+
+        foreach ($this->folders as $id => $folder) {
+            $db->query('REPLACE INTO folders SET id='.$id.' , payload="'.$db->quote(serialize($folder)).'"');
+        }
+    }
+
     public function getAllThings()
     {
         return $this->things;
@@ -175,7 +195,7 @@ class ThingsRepository
         return $this->things[$id];
     }
 
-    public function getThingByFolderId($id)
+    public function getThingsByFolderId($id)
     {
         $folder = $this->getFolderById($id);
         $ret = array();
@@ -186,7 +206,8 @@ class ThingsRepository
         return $ret;
     }
 
-    public function sortThingsArray(ThingEntity $a, ThingEntity $b){
+    public function sortThingsArray(ThingEntity $a, ThingEntity $b)
+    {
         return $a->masterFile->absFileName <=> $b->masterFile->absFileName;
     }
 

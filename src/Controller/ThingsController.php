@@ -20,6 +20,8 @@ namespace App\Controller;
 
 use App\Entity\ThingEntity;
 use App\Manager\ThingsManager;
+use App\Repository\ThingsRepository;
+use App\Repository\ThingsRepositoryDb;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -35,14 +37,17 @@ class ThingsController extends AbstractController
         $this->configHelper = $thingsManager->getConfigHelper();
         $this->fileHelper = $thingsManager->getFileHelper();
 
+#        $this->thingsManager->getMysqlHelper()->;
     }
 
-    public function createFileIndexAction()
+    public function createNewIndexAction()
     {
         $baseDir = $this->configHelper->filePathToThings;
+        /** @var ThingsRepository $thingsRepo */
         $thingsRepo = $this->thingsManager->getEmptyRepository();
         $thingsRepo->initFromFileSystem($baseDir);
         $thingsRepo->save();
+        $thingsRepo->saveDb();
     }
 
     public function createDerivedFilesAction()
@@ -86,13 +91,14 @@ class ThingsController extends AbstractController
      */
     public function folderAction($folderId = 0)
     {
-        $thingsRepo = $this->loadRepository();
+        /* @var ThingsRepositoryDb $thingsRepo */
+        $thingsRepo = $this->getBlankRepositoryDb();
         $folder = $thingsRepo->getFolderById($folderId);
 
         return $this->render('folder/show.html.twig', [
             'folder' => $folder,
             'subfolders' => $thingsRepo->getFoldersByFolderIds($folder->subfolderIds),
-            'things' => $thingsRepo->getThingByFolderId($folderId)
+            'things' => $thingsRepo->getThingsByFolderId($folderId)
         ]);
     }
 
@@ -120,5 +126,12 @@ class ThingsController extends AbstractController
         return $this->thingsManager->loadRepository(
             $this->configHelper->filePathToRepo
         );
+    }
+
+    public function getBlankRepositoryDb()
+    {
+        $repo= $this->thingsManager->initBlankRepositoryDb();
+        $repo->init($this->thingsManager);
+        return $repo;
     }
 }

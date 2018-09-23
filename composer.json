@@ -21,6 +21,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "ext-mysqli": "*",
         "blueimp/Gallery": "^2.33",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "^4.1",
