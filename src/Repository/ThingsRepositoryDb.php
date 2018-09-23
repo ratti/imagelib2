@@ -73,7 +73,9 @@ class ThingsRepositoryDb extends ThingsRepository
     public function getThingsByFolderId($folderId)
     {
         $folder = $this->getFolderById($folderId);
-        return $this->getThingsByThingIds($folder->thingsIds);
+        $ret=$this->getThingsByThingIds($folder->thingsIds);
+        uasort($ret, array($this, 'sortThingsArray'));
+        return $ret;
     }
 
 }
