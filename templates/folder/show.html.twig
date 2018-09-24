@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ folder.title }}{% endblock %}
+{% block title %}{{ folder.getTitleBeautiful() }}{% endblock %}
 
 {% block body %}
     <div class="container-fluid">
@@ -9,7 +9,7 @@
             <a href='/folder/{{ folder.parentId }}'>Up</a>
         {% endif %}
 
-        <h1>{{ folder.title }}</h1>
+        <h1>{{ folder.getTitleBeautiful() }}</h1>
 
         <hr>
 
@@ -17,7 +17,7 @@
             {% for row in subfolders | batch(10) %}
                 <div class="col-4 col-lg-2" id="things_inner">
                     {% for subfolder in row %}
-                        <a class="folder" href='/folder/{{ subfolder.id }}'>{{ subfolder.titleBeautiful }}</a><br>
+                        <a class="folder" href='/folder/{{ subfolder.id }}'>{{ subfolder.getTitleBeautiful() }}</a><br>
                     {% endfor %}
                 </div>
             {% endfor %}

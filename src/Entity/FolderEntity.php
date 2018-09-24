@@ -22,7 +22,7 @@ class FolderEntity extends AbstractEntity
         $this->baseDir = $baseDir;
         $this->relPath = $relPath;
         $this->title = preg_replace('/^.*\//uis', '', $relPath);
-        if(!strlen($this->title)) $this->title='__root__';
+        if (!strlen($this->title)) $this->title = '__root__';
 
         preg_match('/(^.*)\//uis', $this->relPath, $tmp);
         if (array_key_exists(1, $tmp)) {
@@ -41,5 +41,14 @@ class FolderEntity extends AbstractEntity
         echo "parentRelPath: " . $this->parentRelPath . "\n";
         echo "parentId: " . $this->parentId . "\n";
     }
+
+    public function getTitleBeautiful()
+    {
+        $title = $this->title;
+        $title = preg_replace('/^(\d{4})_(\d{2})_(\d{2})__(.*)/uis', '\1-\2-\3 \4', $title);
+        $title = preg_replace('/_+/uis', ' ', $title);
+        return $title;
+    }
+
 
 }
