@@ -48,3 +48,26 @@ img.download {
     font-size: 10px;
     top:0;
 }
+
+a.folder{
+    color:#ccc;
+    font-size: 12px;
+}
+
+#things_inner {
+    border-bottom: 1px solid #fff;
+}
+
+#things {
+    border-bottom: 4px solid #fff;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #fff;
+}
+
+div.thing {
+    background-color: #333;
+}

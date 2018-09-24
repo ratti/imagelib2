@@ -3,65 +3,74 @@
 {% block title %}{{ folder.title }}{% endblock %}
 
 {% block body %}
+    <div class="container-fluid">
 
-    {% if folder.parentId | length %}
-        <a href='/folder/{{ folder.parentId }}'>Up</a>
-    {% endif %}
+        {% if folder.parentId | length %}
+            <a href='/folder/{{ folder.parentId }}'>Up</a>
+        {% endif %}
 
-    <h1>{{ folder.title }}</h1>
+        <h1>{{ folder.title }}</h1>
 
-    <hr>
+        <hr>
 
-    {% for subfolder in subfolders %}
-        <a href='/folder/{{ subfolder.id }}'>{{ subfolder.title }}</a><br>
-    {% endfor %}
+        <div class="row" id="things">
+            {% for row in subfolders | batch(10) %}
+                <div class="col-4 col-lg-2" id="things_inner">
+                    {% for subfolder in row %}
+                        <a class="folder" href='/folder/{{ subfolder.id }}'>{{ subfolder.title }}</a><br>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
 
-    <hr>
+        <div class="row" id="things">
+            {% for thing in things %}
+                <div class="col-4 col-lg-2 thing">
+                    {% if thing.isImage() %}
+                        <a class="thing" href='/poster/{{ thing.posterFile.relFileName }}'
+                           title="{{ thing.masterFile.basename }}"
+                           data-gallery
+                           data-thingId="{{ thing.id }}"
+                        >
+                            <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}'
+                                 alt="thumbnail">
+                        </a>
+                    {% elseif thing.isProprietaryMovie() %}
+                        <a class='thing'
+                           href='/video/{{ thing.derivedVideoFile.relFileName }}'
+                           title="{{ thing.masterFile.basename }}"
+                           type="video/mp4"
+                           data-poster="/poster/{{ thing.posterFile.relFileName }}"
+                           data-sources='[{"href": "/video/{{ thing.derivedVideoFile.relFileName }}", "type": "video/mp4"}]'
+                           data-gallery
+                           data-thingId="{{ thing.id }}"
+                        >
+                            <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}'
+                                 alt="thumbnail">
+                        </a>
+                    {% elseif thing.isMovie() %}
+                        <a class='thing'
+                           href='/master/{{ thing.masterFile.relFileName }}'
+                           title="{{ thing.masterFile.basename }}"
+                           type="video/mp4"
+                           data-poster="/poster/{{ thing.posterFile.relFileName }}"
+                           data-sources='[{"href": "/master/{{ thing.masterFile.relFileName }}", "type": "video/mp4"}]'
+                           data-gallery
+                           data-thingId="{{ thing.id }}"
+                        >
+                            <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}'
+                                 alt="thumbnail">
+                        </a>
+                    {% endif %}
 
-    <div class="row" id="things">
-        {% for thing in things %}
-            <div class="col-4 col-lg-2">
-                {% if thing.isImage() %}
-                    <a class="thing" href='/poster/{{ thing.posterFile.relFileName }}'
-                       title="{{ thing.masterFile.basename }}"
-                       data-gallery
-                       data-thingId="{{ thing.id }}"
-                    >
-                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
-                    </a>
-                {% elseif thing.isProprietaryMovie() %}
-                    <a class='thing'
-                       href='/video/{{ thing.derivedVideoFile.relFileName }}'
-                       title="{{ thing.masterFile.basename }}"
-                       type="video/mp4"
-                       data-poster="/poster/{{ thing.posterFile.relFileName }}"
-                       data-sources='[{"href": "/video/{{ thing.derivedVideoFile.relFileName }}", "type": "video/mp4"}]'
-                       data-gallery
-                       data-thingId="{{ thing.id }}"
-                    >
-                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
-                    </a>
-                {% elseif thing.isMovie() %}
-                    <a class='thing'
-                       href='/master/{{ thing.masterFile.relFileName }}'
-                       title="{{ thing.masterFile.basename }}"
-                       type="video/mp4"
-                       data-poster="/poster/{{ thing.posterFile.relFileName }}"
-                       data-sources='[{"href": "/master/{{ thing.masterFile.relFileName }}", "type": "video/mp4"}]'
-                       data-gallery
-                       data-thingId="{{ thing.id }}"
-                    >
-                        <img class="thumbnail" src='/thumbnail/{{ thing.thumbnailFile.relFileName }}' alt="thumbnail">
-                    </a>
-                {% endif %}
+                    <p><a href='/download/{{ thing.id }}'>
+                            <img class="icon download" src='/img/download.png'>
+                        </a></p>
+                </div>
+            {% endfor %}
+        </div>
 
-                <p><a href='/download/{{ thing.id }}'>
-                        <img class="icon download" src='/img/download.png'>
-                    </a></p>
-            </div>
-        {% endfor %}
     </div>
-
 {% endblock %}
 
 
