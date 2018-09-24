@@ -11,8 +11,8 @@
  *
  * @link      http://www.superreal.de
  * @package App\Helper
- * @copyright (C) superReal 2018
- * @author    Joerg Rossdeutscher <j.rossdeutscher _AT_ superreal.de>
+ * @copyright (C) Joerg Rossdeutscher
+ * @author    Joerg Rossdeutscher <j.rossdeutscher _AT_ mondaydevice.it>
  */
 
 namespace App\Helper;
