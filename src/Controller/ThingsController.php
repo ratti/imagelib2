@@ -93,11 +93,20 @@ class ThingsController extends AbstractController
     {
         /* @var ThingsRepositoryDb $thingsRepo */
         $thingsRepo = $this->getBlankRepositoryDb();
+
         $folder = $thingsRepo->getFolderById($folderId);
+
+        $subfolders = $thingsRepo->getFoldersByFolderIds($folder->subfolderIds);
+        foreach ($subfolders as $subfolder) {
+            $title = $subfolder->title;
+            $title=preg_replace('/^(\d{4})_(\d{2})_(\d{2})__(.*)/uis','\1-\2-\3 \4',$title);
+            $title=preg_replace('/_+/uis',' ',$title);
+            $subfolder->titleBeautiful = $title;
+        }
 
         return $this->render('folder/show.html.twig', [
             'folder' => $folder,
-            'subfolders' => $thingsRepo->getFoldersByFolderIds($folder->subfolderIds),
+            'subfolders' => $subfolders,
             'things' => $thingsRepo->getThingsByFolderId($folderId)
         ]);
     }
@@ -130,7 +139,7 @@ class ThingsController extends AbstractController
 
     public function getBlankRepositoryDb()
     {
-        $repo= $this->thingsManager->initBlankRepositoryDb();
+        $repo = $this->thingsManager->initBlankRepositoryDb();
         $repo->init($this->thingsManager);
         return $repo;
     }
