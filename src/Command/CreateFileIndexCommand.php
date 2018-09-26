@@ -3,18 +3,7 @@
 /**
  * Class CreateFileIndexCommand
  *
- * This Software is the property of superReal and is protected
- * by copyright law - it is NOT Freeware.
- *
- * Any unauthorized use of this software without a valid license key
- * is a violation of the license agreement and will be prosecuted by
- * civil and criminal law.
- *
- * @package   App\Command
- * @author    Joerg Rossdeutscher <j.rossdeutscher@superreal.de>
- * @copyright 2018 superReal
- * @link      http://www.superreal.de
- */
+*/
 
 namespace App\Command;
 
