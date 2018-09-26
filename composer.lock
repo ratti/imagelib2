@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4c507b209617e7d7605e92d09ef285d",
+    "content-hash": "c3b8db5d561bc2d4358fd70c95eb4f29",
     "packages": [
         {
             "name": "blueimp/Gallery",
@@ -3042,7 +3042,8 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-mysqli": "*"
     },
     "platform-dev": []
 }
