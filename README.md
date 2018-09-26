@@ -13,6 +13,9 @@ php7.2
 
 create config.php from the DIST-version.
 
+Create a database with charset utf8mb4 and import INIT.sql
+guest user is included, others can be added. Password is bcrypt 12 encoded.
+
 See bin/console for commands how to index the image folder, create derived images and videos. Use symfony webserver from console. 
 Login is guest:guest.
 
