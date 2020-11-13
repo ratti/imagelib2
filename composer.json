@@ -3,13 +3,13 @@
     "license": "proprietary",
 
     "repositories": {
-        "Gallery": {
+        "gallery": {
             "type": "package",
             "package": {
-                "name": "blueimp/Gallery",
+                "name": "blueimp/gallery",
                 "version": "2.33.0",
                 "source": {
-                    "url": "https://github.com/blueimp/Gallery.git",
+                    "url": "https://github.com/blueimp/gallery.git",
                     "type": "git",
                     "reference": "origin/master"
                 }
@@ -22,7 +22,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "ext-mysqli": "*",
-        "blueimp/Gallery": "^2.33",
+        "blueimp/gallery": "^2.33",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "^4.1",
         "symfony/console": "^4.1",

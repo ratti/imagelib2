@@ -196,7 +196,7 @@ class ThingsRepository
 
     public function sortThingsArray(ThingEntity $a, ThingEntity $b)
     {
-        return $a->masterFile->absFileName <=> $b->masterFile->absFileName;
+        return $a->masterFile->fileModificationTime <=> $b->masterFile->fileModificationTime;
     }
 
     public function getFoldersByFolderIds($folderIds)

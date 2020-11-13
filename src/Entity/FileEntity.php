@@ -21,6 +21,7 @@ class FileEntity
     public $basename;
     public $extension;
     public $filename;
+    public $fileModificationTime = null;
 
     public function dump()
     {
@@ -32,6 +33,7 @@ class FileEntity
         echo "basename: " . $this->basename . "\n";
         echo "extension: " . $this->extension . "\n";
         echo "filename: " . $this->filename . "\n";
+        echo "fileModificationTime: " . $this->fileModificationTime . "\n";
     }
 
     public function __construct(ThingsManager $thingsManager, $baseDir, $relFileName)
@@ -52,8 +54,9 @@ class FileEntity
         $this->basename = $path_parts['basename'];
         $this->extension = $path_parts['extension'];
         $this->filename = $path_parts['filename'];
-
-
+        if (file_exists($this->absFileName)) {
+            $this->fileModificationTime = filemtime($this->absFileName);
+        }
     }
 
     public function __toString()
