@@ -13,7 +13,7 @@
 
         <hr>
 
-        <div class="row" id="things">
+        <div class="row" id="thingfolders">
             {% for row in subfolders | batch(10) %}
                 <div class="col-4 col-lg-2" id="things_inner">
                     {% for subfolder in row %}
@@ -95,8 +95,10 @@
     <script type=application/javascript>
 
         $('#blueimp-gallery').on('slide', function (event, index, slide) {
-            var thing = $('#things .thing').eq(index)[0];
-            var thingid = $(thing).data('thingid')
+//            console.log(index, slide);
+            var thingid = $('#things div.thing:nth-of-type(' + (index + 1) + ') a.thing').data('thingid')
+//            var thing = $('#things div.thing')[index];
+//            var thingid = $(thing).data('thingid')
             $('#blueimp-gallery').find('.download').html("<a href='/download/" + thingid + "'><img class='icon download_poster' src='/img/download.png'></a>");
         });
 
