@@ -20,6 +20,9 @@
     "nikic/php-parser": {
         "version": "v4.0.3"
     },
+    "php": {
+        "version": "7.3"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -122,7 +125,13 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/mime": {
+        "version": "v4.4.16"
+    },
     "symfony/polyfill-intl-grapheme": {
+        "version": "v1.20.0"
+    },
+    "symfony/polyfill-intl-idn": {
         "version": "v1.20.0"
     },
     "symfony/polyfill-intl-normalizer": {
@@ -130,6 +139,9 @@
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.9.0"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.20.0"
     },
     "symfony/polyfill-php73": {
         "version": "v1.20.0"
